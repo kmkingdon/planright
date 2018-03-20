@@ -1,6 +1,20 @@
 <template>
     <div class="template-views">
       <h2> Components </h2>
+      <div id="components">
+        <ul>
+          <li v-for="component in lessonComponents">
+            <input class="checkbox" type="checkbox" :value="component.id" v-model="selectedComponents"/>
+            <h3>{{component.name}}</h3>
+            <select v-if="selectedComponents.includes(component.id)" :id="component.id" class="input" name="htmlType" v-model="htmlTypes" >
+              <option value="">Select Input </option>
+              <option value="const">Permanent Fill</option>
+              <option value="text">Text Box</option>
+              <option value="select">Drop Down Menu</option>
+            </select>
+          </li>
+        </ul>
+      </div>
       <button id="back" v-on:click="changeTemplateStepBack">
         <img  src="../../../static/arrow.png" alt="simple-logo"/>
         <h3>Back</h3>
@@ -21,15 +35,24 @@ export default {
   },
   data() {
     return {
+      selectedComponents:[],
+      htmlTypes:{
+        const: [],
+      }
     };
   },
   computed: mapGetters([
-    'templateStep'
+    'templateStep',
+    'lessonComponents',
   ]),
   methods: mapActions([
     'changeTemplateStepBack',
     'changeTemplateStepNext',
-  ])
+    'getComponents'
+  ]),
+  mounted(){
+    this.getComponents();
+  }
 };
 </script>
 
@@ -54,6 +77,44 @@ export default {
     1px -1px 0 #120832,
     -1px 1px 0 #120832,
      1px 1px 0 #120832;
+}
+
+#components{
+  grid-row: 2/3;
+  grid-column: 1/3;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#components ul {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#components li {
+  display: flex;
+  flex-flow: row;
+  width: 32%;
+  height: 1.7rem;
+  margin: .3rem;
+}
+
+#components h3 {
+  width: 45%;
+  margin-left: .5rem;
+  margin-bottom: .5rem;
+  font-size: 1rem;
+}
+
+.checkbox {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: .5rem;
+}
+
+.input {
+  width: 35%;
+  height: 1.5rem;
 }
 
 #next{
