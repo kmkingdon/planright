@@ -17,7 +17,7 @@
           <h2 v-bind:class="{active:(templateStep === 3)}"> Arrange Your Components </h2>
           <img class="checkboxes" v-if="templateStep <= 4" src="../../static/checkbox.png" />
           <img class="checkboxes" v-if="templateStep > 4" src="../../static/checkboxcompleted.png" />
-          <h2 v-bind:class="{active:(templateStep === 4)}"> Add Customizable Drop Down Menus </h2>
+          <h2 v-bind:class="{active:(templateStep === 4)}"> Customize Template Components </h2>
           <img class="checkboxes" v-if="templateStep <= 5" src="../../static/checkbox.png" />
           <img class="checkboxes" v-if="templateStep > 5" src="../../static/checkboxcompleted.png" />
           <h2 v-bind:class="{active:(templateStep === 5)}"> Save Your Template</h2>
