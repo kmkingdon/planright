@@ -1,12 +1,12 @@
 <template>
     <div class="template-views">
-      <h2> Components </h2>
+      <h2> Pick Your Components: </h2>
       <div id="components">
         <ul>
           <li v-for="component in lessonComponents">
             <input class="checkbox" type="checkbox" :value="component.id" v-model="selectedComponents"/>
             <h3>{{component.name}}</h3>
-            <select v-if="selectedComponents.includes(component.id)" :id="component.id" class="input" name="htmlType" v-model="htmlTypes" >
+            <select v-on:change.prevent="saveChange" v-if="selectedComponents.includes(component.id)" :id="component.id" class="input" name="htmlType" >
               <option value="">Select Input </option>
               <option value="const">Permanent Fill</option>
               <option value="text">Text Box</option>
@@ -44,12 +44,18 @@ export default {
   computed: mapGetters([
     'templateStep',
     'lessonComponents',
+    'selectedComponentsList',
   ]),
-  methods: mapActions([
+  methods: {
+  ...mapActions([
     'changeTemplateStepBack',
     'changeTemplateStepNext',
-    'getComponents'
+    'getComponents',
   ]),
+    saveChange(event){
+    this.$store.dispatch('saveSelectedComponents', event)
+    }
+  },
   mounted(){
     this.getComponents();
   }
@@ -103,13 +109,14 @@ export default {
   width: 45%;
   margin-left: .5rem;
   margin-bottom: .5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 .checkbox {
   width: 1.2rem;
   height: 1.2rem;
   margin-left: .5rem;
+  border: solid black 1px;
 }
 
 .input {

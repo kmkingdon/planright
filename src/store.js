@@ -12,7 +12,8 @@ const state = {
     gradeLevel: '',
   },
   lessonComponents: [],
-  selectedComponents: [],
+  selectedComponentsList: [],
+  arrangeComponentArray: [],
 };
 
 const mutations = {
@@ -31,7 +32,42 @@ const mutations = {
   },
   saveComponents(state, res) {
     state.lessonComponents = res.users;
-  }
+  },
+  saveSelectedComponents(state, event) {
+    var exhists= false;
+
+    state.selectedComponentsList.forEach((item) => {
+      if(event.target.id === item.id) {
+        item.htmlType = event.target.value;
+        exhists = true;
+      }
+    });
+
+    if (exhists === false) {
+      state.selectedComponentsList.push({
+        id: parseInt(event.target.id),
+        htmlType: event.target.value,
+      });
+    }
+  },
+  arrangeComponentList(state) {
+    const filterById = (array, id) => array.filter(item => item.id === id);
+    const list = state.selectedComponentsList.map((component) => {
+      return Object.assign({}, component, filterById(state.lessonComponents, component.id)[0])
+    });
+    state.arrangeComponentArray = list;
+  },
+  saveOrder(state, { oldIndex, newIndex }) {
+    const categories = state.arrangeComponentArray.slice();
+    categories.splice(newIndex, 0, categories.splice(oldIndex, 1)[0]);
+    state.arrangeComponentArray = categories;
+  },
+  saveOrderFinal(state) {
+    state.arrangeComponentArray.forEach((component, i) => {
+      component.order = i;
+    })
+    console.log(state.arrangeComponentArray)
+  },
 };
 
 
@@ -39,14 +75,19 @@ const actions = {
   openSettings: ({ commit }) => commit('openSettings'),
   changeTemplateStepNext: ({ commit }) => commit('changeTemplateStepNext'),
   changeTemplateStepBack: ({ commit }) => commit('changeTemplateStepBack'),
-
-  getComponents ({ commit }) {
+  getComponents({ commit }) {
     fetch('https://planrightdb.herokuapp.com/components')
       .then(res => res.json())
       .then(res => commit('saveComponents', res));
   },
-
-
+  saveSelectedComponents: ({ commit }, event) => {
+    commit('saveSelectedComponents', event)
+  },
+  arrangeComponentList: ({ commit }) => commit('arrangeComponentList'),
+  saveOrder: ({ commit }, {oldIndex, newIndex}) => {
+    commit('saveOrder', {oldIndex, newIndex})
+  },
+  saveOrderFinal: ({ commit }) => commit('saveOrderFinal'),
   // searchStandards({ commit }) {
   //   var client = algoliasearch('O7L4OQENOZ', 'def640649a42fff2f56df3c284c27230');
   //   var index = client.initIndex('common-standards-project');
@@ -63,7 +104,8 @@ const getters = {
   templateStep: state => state.templateStep,
   standardsSelected: state => state.standardsSelected,
   lessonComponents: state => state.lessonComponents,
-  selectedComponents: state => state.selectedComponents,
+  selectedComponentsList: state => state.selectedComponentsList,
+  arrangeComponentArray: state => state.arrangeComponentArray,
 }
 
 // A Vuex instance is created by combining the state, mutations, actions,

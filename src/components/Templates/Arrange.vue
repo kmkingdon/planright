@@ -1,6 +1,19 @@
 <template>
     <div class="template-views">
-      <h2> Arrange </h2>
+      <h2> Arrange Your Components In Order: </h2>
+      <div id="arrange">
+        <div id="key">
+          <img src="../../../static/key.png" alt="key"/>
+        </div>
+        <draggable id="drag-container" v-model="arrangeComponentArray"  @start="drag=true" @end="saveOrder">
+         <div id="drag-box" v-for="element in arrangeComponentArray" :key="element.id">
+            <h3>{{element.name}}</h3>
+         </div>
+        </draggable>
+        <div id="save">
+          <button v-on:click="saveOrderFinal" >Save Order</button>
+        </div>
+      </div>
       <button id="back" v-on:click="changeTemplateStepBack">
         <img  src="../../../static/arrow.png" alt="simple-logo"/>
         <h3>Back</h3>
@@ -13,23 +26,40 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Arrange',
   components: {
+    draggable,
   },
   data() {
     return {
     };
   },
   computed: mapGetters([
-    'templateStep'
+    'templateStep',
+    'arrangeComponentArray',
   ]),
-  methods: mapActions([
+  methods: {
+  ...mapActions([
     'changeTemplateStepBack',
     'changeTemplateStepNext',
-  ])
+    'arrangeComponentList',
+    'saveOrderFinal',
+  ]),
+    saveOrder(evt) {
+      this.$store.commit({
+        type: 'saveOrder',
+        oldIndex: evt.oldIndex,
+        newIndex: evt.newIndex,
+    });
+  },
+  },
+  mounted(){
+    this.arrangeComponentList();
+  }
 };
 </script>
 
@@ -54,6 +84,77 @@ export default {
     1px -1px 0 #120832,
     -1px 1px 0 #120832,
      1px 1px 0 #120832;
+}
+
+#arrange {
+  grid-row: 2/3;
+  grid-column: 1/3;
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 20% 60% 20%;
+}
+
+#key {
+  grid-row: 1/2;
+  grid-column: 1/2;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#key img {
+  width: 80%;
+  height: 80%;
+}
+
+#save {
+  grid-row: 1/2;
+  grid-column: 3/4;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#save button {
+  width: 90%;
+  height: 3rem;
+  color: white;
+  font-size: 1rem;
+  text-decoration: none;
+  background-color: #D09400;
+  border: solid #120832 1px;
+  border-radius: 10px;
+}
+
+#drag-container{
+  grid-row: 1/2;
+  grid-column: 2/3;
+  width: 100%;
+  height: 95%;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #AFADB3;
+  overflow: scroll;
+}
+
+
+#drag-box {
+  width: 60%;
+  height: 2.5rem;
+  border: solid black 1px;
+  border-radius: 10px;
+  margin: .5rem 0rem;
+  text-align: center;
+  background-color: #120832;
+}
+
+#drag-box h3{
+  font-size: 1.2rem;
+  color: white;
 }
 
 #next{
