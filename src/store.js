@@ -6,6 +6,8 @@ Vue.use(Vuex);
 const state = {
   authorized: true,
   settingsView: false,
+  arrangeConfirm: false,
+  saveTemplateConfirm: false,
   templateStep: 1,
   standardsSelected: {
     standardsSet: '',
@@ -14,6 +16,7 @@ const state = {
   lessonComponents: [],
   selectedComponentsList: [],
   arrangeComponentArray: [],
+  templateName: '',
 };
 
 const mutations = {
@@ -65,8 +68,9 @@ const mutations = {
   saveOrderFinal(state) {
     state.arrangeComponentArray.forEach((component, i) => {
       component.order = i;
-    })
-    console.log(state.arrangeComponentArray)
+    });
+    state.arrangeConfirm = true;
+    setTimeout(function(){state.arrangeConfirm = false}, 5000);
   },
 };
 
@@ -106,7 +110,10 @@ const getters = {
   lessonComponents: state => state.lessonComponents,
   selectedComponentsList: state => state.selectedComponentsList,
   arrangeComponentArray: state => state.arrangeComponentArray,
-}
+  templateName: state => state.templateName,
+  arrangeConfirm: state => state.arrangeConfirm,
+  saveTemplateConfirm: state => state.saveTemplateConfirm,
+};
 
 // A Vuex instance is created by combining the state, mutations, actions,
 // and getters.

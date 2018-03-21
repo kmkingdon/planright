@@ -7,7 +7,7 @@
           <ul>
             <li v-for="item in arrangeComponentArray" v-if="item.htmlType === 'const'">
               <h4 >{{item.name}}</h4>
-              <input type="text" />
+              <input type="text" v-model="item.customization"/>
             </li>
           </ul>
         </div>
@@ -17,7 +17,7 @@
           <ul>
             <li v-for="item in arrangeComponentArray" v-if="item.htmlType === 'select'">
               <h4 >{{item.name}}</h4>
-              <input type="text" />
+              <input type="text" v-model="item.customization"/>
             </li>
           </ul>
         </div>
@@ -93,6 +93,7 @@ export default {
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
+  overflow:scroll;
 }
 
 #select {
@@ -102,13 +103,21 @@ export default {
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
+  overflow:scroll;
 }
 
 #customize h3 {
   width: 75%;
   font-size: 1.3rem;
   text-align: center;
-  margin: 1rem 0rem;
+  margin: 1rem 0rem 1rem 0rem;
+}
+
+#customize small {
+  width: 75%;
+  font-size: .8rem;
+  text-align: center;
+  margin: -1rem 0rem .25rem 0rem;
 }
 
 #customize ul {

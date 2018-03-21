@@ -12,6 +12,7 @@
         </draggable>
         <div id="save">
           <button v-on:click="saveOrderFinal" >Save Order</button>
+          <p v-if="arrangeConfirm"> Order Saved!</p>
         </div>
       </div>
       <button id="back" v-on:click="changeTemplateStepBack">
@@ -41,6 +42,7 @@ export default {
   computed: mapGetters([
     'templateStep',
     'arrangeComponentArray',
+    'arrangeConfirm',
   ]),
   methods: {
   ...mapActions([
@@ -126,6 +128,11 @@ export default {
   background-color: #D09400;
   border: solid #120832 1px;
   border-radius: 10px;
+}
+
+#save p {
+  margin-top: 1rem;
+  color: #D09400;
 }
 
 #drag-container{

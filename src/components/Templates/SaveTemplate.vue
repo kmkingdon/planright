@@ -1,6 +1,14 @@
 <template>
     <div class="template-views">
-      <h2> Save </h2>
+      <h2> Save Your Template </h2>
+      <div id="save">
+        <form>
+          <label for="templateName"> Name Your Template </label>
+          <input v-model="templateName" type="text" name="templateName"/>
+          <button>Save Template </button>
+          <p v-if="saveTemplateConfirm"> Template Saved!</p>
+        </form>
+      </div>
       <button id="back" v-on:click="changeTemplateStepBack">
         <img  src="../../../static/arrow.png" alt="simple-logo"/>
         <h3>Back</h3>
@@ -17,10 +25,13 @@ export default {
   },
   data() {
     return {
+      templateName: '',
     };
   },
   computed: mapGetters([
-    'templateStep'
+    'templateStep',
+    'templateName',
+    'saveTemplateConfirm',
   ]),
   methods: mapActions([
     'changeTemplateStepBack',
@@ -49,6 +60,51 @@ export default {
     1px -1px 0 #120832,
     -1px 1px 0 #120832,
      1px 1px 0 #120832;
+}
+
+#save {
+  grid-row: 2/3;
+  grid-column: 1/3;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#save form {
+  width: 60%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#save label {
+  font-size: 1.2rem;
+  margin-bottom: .8rem;
+}
+
+#save input {
+  width: 100%;
+  height: 2rem;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+#save button {
+  width: 50%;
+  height: 3rem;
+  color: white;
+  font-size: 1.5rem;
+  text-decoration: none;
+  background-color: #D09400;
+  border: solid #120832 1px;
+  border-radius: 10px;
+}
+
+#save p {
+  margin-top: 1rem;
+  color: #D09400;
 }
 
 #back{
