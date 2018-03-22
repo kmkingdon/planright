@@ -68,5 +68,6 @@ table {
   width: 100vw;
   height: 100vh;
   font-family: Barlow;
+  overflow: hidden;
 }
 </style>

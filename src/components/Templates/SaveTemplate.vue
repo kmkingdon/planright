@@ -4,8 +4,8 @@
       <div id="save">
         <form>
           <label for="templateName"> Name Your Template </label>
-          <input v-model="templateName" type="text" name="templateName"/>
-          <button>Save Template </button>
+          <input v-model="names.templateName" type="text" name="templateName"/>
+          <button v-on:click.prevent="saveTemplate">Save Template </button>
           <p v-if="saveTemplateConfirm"> Template Saved!</p>
         </form>
       </div>
@@ -13,6 +13,7 @@
         <img  src="../../../static/arrow.png" alt="simple-logo"/>
         <h3>Back</h3>
       </button>
+      <router-link id="next" v-if="saveTemplateConfirm" to="/lessonplan">To Lesson Plans</router-link>
     </div>
 </template>
 
@@ -25,16 +26,16 @@ export default {
   },
   data() {
     return {
-      templateName: '',
     };
   },
   computed: mapGetters([
     'templateStep',
-    'templateName',
+    'names',
     'saveTemplateConfirm',
   ]),
   methods: mapActions([
     'changeTemplateStepBack',
+    'saveTemplate',
   ])
 };
 </script>
@@ -43,7 +44,7 @@ export default {
 <style scoped>
 .template-views {
   display: grid;
-  grid-template-rows: 5vh 55vh 10vh;
+  grid-template-rows: 8vh 55vh 8vh;
   grid-template-columns: 35vw 35vw;
 }
 
@@ -53,7 +54,7 @@ export default {
   justify-self: center;
   align-self: center;
   font-size: 1.7rem;
-  font-family: Barlow;
+  font-family: 'Nanum+Myeongjo';
   color:white;
   text-shadow:
    -1px -1px 0 #120832,
@@ -80,7 +81,7 @@ export default {
 }
 
 #save label {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-bottom: .8rem;
 }
 
@@ -112,7 +113,7 @@ export default {
   grid-column: 1/2;
   justify-self: center;
   align-self: start;
-  height: 40%;
+  height: 50%;
   width: 13vw;
   text-decoration: none;
   background-color:#939097;
@@ -124,7 +125,6 @@ export default {
   align-items: center;
 }
 
-
 #back h3{
   color:#D09400 ;
   font-size: 1.3rem;
@@ -135,12 +135,35 @@ export default {
      1px 1px 0 #120832;
 }
 
-
-
 #back img {
   height: 60%;
-  width: 15%;
+  width: 12%;
   margin-right: .5rem;
+}
+
+#next {
+  grid-row: 3/4;
+  grid-column: 2/3;
+  justify-self: center;
+  align-self: start;
+  height: 50%;
+  width: 13vw;
+  text-decoration: none;
+  background-color:#939097;
+  border: solid #120832 1px;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  color:#D09400 ;
+  text-decoration: none;
+  font-size: 1.2rem;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
 }
 
 </style>

@@ -18,8 +18,8 @@
           <img class="checkboxes" v-if="templateStep <= 4" src="../../static/checkbox.png" />
           <img class="checkboxes" v-if="templateStep > 4" src="../../static/checkboxcompleted.png" />
           <h2 v-bind:class="{active:(templateStep === 4)}"> Customize Template Components </h2>
-          <img class="checkboxes" v-if="templateStep <= 5" src="../../static/checkbox.png" />
-          <img class="checkboxes" v-if="templateStep > 5" src="../../static/checkboxcompleted.png" />
+          <img class="checkboxes" v-if="templateStep <= 5 && !saveTemplateConfirm" src="../../static/checkbox.png" />
+          <img class="checkboxes" v-if="saveTemplateConfirm" src="../../static/checkboxcompleted.png" />
           <h2 v-bind:class="{active:(templateStep === 5)}"> Save Your Template</h2>
         </div>
       </aside>
@@ -60,10 +60,15 @@ export default {
     };
   },
   computed: mapGetters([
-    'templateStep'
+    'templateStep',
+    'saveTemplateConfirm',
   ]),
   methods: mapActions([
-  ])
+    'resetTemplateVariables',
+  ]),
+  mounted(){
+    this.resetTemplateVariables();
+  }
 };
 </script>
 
@@ -84,6 +89,10 @@ export default {
 #selected-template {
   grid-row: 1/2;
   grid-column: 2/3;
+  background-image: url("../../static/template.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 aside {
@@ -91,7 +100,7 @@ aside {
   grid-column: 1/2;
   background-color: #AFADB3;
   display: grid;
-  grid-template-rows: 10vh 60vh;
+  grid-template-rows: 8vh 62vh;
   grid-template-columns: 30vw;
 }
 
@@ -101,7 +110,7 @@ aside h1 {
   justify-self: center;
   align-self: center;
   font-family: 'Nanum+Myeongjo';
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   color: white;
   text-shadow:
    -1px -1px 0 #120832,
@@ -132,7 +141,7 @@ aside h1 {
 }
 
 .active {
-  color: #D09400 !important;
+  color: white !important;
   text-shadow:
    -1px -1px 0 #120832,
     1px -1px 0 #120832,

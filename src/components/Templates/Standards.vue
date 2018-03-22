@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .template-views {
   display: grid;
-  grid-template-rows: 5vh 55vh 10vh;
+  grid-template-rows: 8vh 55vh 8vh;
   grid-template-columns: 35vw 35vw;
 }
 
@@ -64,8 +64,8 @@ export default {
   grid-column: 1/3;
   justify-self: center;
   align-self: center;
-  font-size: 1.5rem;
-  font-family: Barlow;
+  font-size: 1.7rem;
+  font-family: 'Nanum+Myeongjo';
   color:white;
   text-shadow:
    -1px -1px 0 #120832,
@@ -93,7 +93,7 @@ export default {
 }
 
 #standards label {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-bottom: .8rem;
 }
 
@@ -109,7 +109,7 @@ export default {
   grid-column: 2/3;
   justify-self: center;
   align-self: start;
-  height: 40%;
+  height: 50%;
   width: 13vw;
   text-decoration: none;
   background-color:#939097;
@@ -132,7 +132,7 @@ export default {
 }
 #next img {
   height: 60%;
-  width: 15%;
+  width: 12%;
   margin-left: .5rem;
 }
 </style>

@@ -66,7 +66,7 @@ export default {
 <style scoped>
 .template-views {
   display: grid;
-  grid-template-rows: 5vh 55vh 10vh;
+  grid-template-rows: 8vh 55vh 8vh;
   grid-template-columns: 35vw 35vw;
 }
 
@@ -76,7 +76,7 @@ export default {
   justify-self: center;
   align-self: center;
   font-size: 1.5rem;
-  font-family: Barlow;
+  font-family: 'Nanum+Myeongjo';
   color:white;
   text-shadow:
    -1px -1px 0 #120832,
@@ -117,6 +117,7 @@ export default {
   height: 1.2rem;
   margin-left: .5rem;
   border: solid black 1px;
+  background-color: #D09400;
 }
 
 .input {
@@ -124,29 +125,12 @@ export default {
   height: 1.5rem;
 }
 
-#next{
-  grid-row: 3/4;
-  grid-column: 2/3;
-  justify-self: center;
-  align-self: start;
-  height: 40%;
-  width: 13vw;
-  text-decoration: none;
-  background-color:#939097;
-  border: solid #120832 1px;
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-}
-
 #back{
   grid-row: 3/4;
   grid-column: 1/2;
   justify-self: center;
   align-self: start;
-  height: 40%;
+  height: 50%;
   width: 13vw;
   text-decoration: none;
   background-color:#939097;
@@ -158,15 +142,6 @@ export default {
   align-items: center;
 }
 
-#next h3{
-  color:#D09400 ;
-  font-size: 1.3rem;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
-}
 #back h3{
   color:#D09400 ;
   font-size: 1.3rem;
@@ -177,16 +152,42 @@ export default {
      1px 1px 0 #120832;
 }
 
-#next img {
-  height: 60%;
-  width: 15%;
-  margin-left: .5rem;
-}
-
 #back img {
   height: 60%;
-  width: 15%;
+  width: 12%;
   margin-right: .5rem;
+}
+
+#next {
+  grid-row: 3/4;
+  grid-column: 2/3;
+  justify-self: center;
+  align-self: start;
+  height: 50%;
+  width: 13vw;
+  text-decoration: none;
+  background-color:#939097;
+  border: solid #120832 1px;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#next h3 {
+  color:#D09400 ;
+  font-size: 1.2rem;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
+}
+#next img {
+  height: 60%;
+  width: 12%;
+  margin-left: .5rem;
 }
 
 </style>

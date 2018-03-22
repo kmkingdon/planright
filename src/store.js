@@ -8,15 +8,22 @@ const state = {
   settingsView: false,
   arrangeConfirm: false,
   saveTemplateConfirm: false,
+  saveLessonConfirm: false,
   templateStep: 1,
   standardsSelected: {
     standardsSet: '',
     gradeLevel: '',
   },
   lessonComponents: [],
+  lessonTemplates: [],
+  lessonPlans: [],
+  folders: [],
   selectedComponentsList: [],
   arrangeComponentArray: [],
-  templateName: '',
+  names: {
+    templateName: '',
+    lessonName: '',
+  },
 };
 
 const mutations = {
@@ -36,21 +43,42 @@ const mutations = {
   saveComponents(state, res) {
     state.lessonComponents = res.users;
   },
+  saveLessonTemplates(state, res) {
+    state.lessonTemplates = res.templates;
+  },
+  updateLessonTemplates(state, res) {
+    state.saveTemplateConfirm = true;
+    state.lessonTemplates.push(res.templates);
+  },
+  saveLessonPlans(state, res) {
+    state.lessonPlans = res.plans;
+  },
+  getFolders(state) {
+    setTimeout(()=> {
+      state.lessonPlans.forEach(lesson => {
+        state.folders.push(lesson.fileName);
+      });
+    }, 5000)
+  },
+  resetTemplateVariables(state){
+    state.saveTemplateConfirm = false;
+    state.names.templateName = '';
+    state.arrangeComponentArray = [];
+    state.templateStep = 1;
+    state.standardsSelected = { standardsSet: '', gradeLevel: '', };
+  },
   saveSelectedComponents(state, event) {
-    var exhists= false;
-
-    state.selectedComponentsList.forEach((item) => {
-      if(event.target.id === item.id) {
-        item.htmlType = event.target.value;
-        exhists = true;
-      }
-    });
-
-    if (exhists === false) {
+    if(state.selectedComponentsList.filter(item => event.target.id == item.id).length === 0) {
       state.selectedComponentsList.push({
         id: parseInt(event.target.id),
         htmlType: event.target.value,
       });
+    } else {
+      state.selectedComponentsList.forEach(item => {
+        if(item.id === event.id) {
+          item.htmlType = event.target.value;
+        }
+      })
     }
   },
   arrangeComponentList(state) {
@@ -72,6 +100,9 @@ const mutations = {
     state.arrangeConfirm = true;
     setTimeout(function(){state.arrangeConfirm = false}, 5000);
   },
+  addFolder(payload) {
+    state.folders.push(payload);
+  }
 };
 
 
@@ -79,6 +110,7 @@ const actions = {
   openSettings: ({ commit }) => commit('openSettings'),
   changeTemplateStepNext: ({ commit }) => commit('changeTemplateStepNext'),
   changeTemplateStepBack: ({ commit }) => commit('changeTemplateStepBack'),
+  resetTemplateVariables: ({ commit }) => commit('resetTemplateVariables'),
   getComponents({ commit }) {
     fetch('https://planrightdb.herokuapp.com/components')
       .then(res => res.json())
@@ -92,6 +124,63 @@ const actions = {
     commit('saveOrder', {oldIndex, newIndex})
   },
   saveOrderFinal: ({ commit }) => commit('saveOrderFinal'),
+  saveTemplate({ commit, state }) {
+    let finalTemplate = ['<form>'];
+    state.arrangeComponentArray.forEach((item) => {
+      switch(item.htmlType) {
+        case 'text':
+          finalTemplate.push(`<label>${item.name}</label><textarea></textarea>`);
+          break;
+        case 'const':
+          finalTemplate.push(`<label>${item.name}</label><h1>${item.customization}</h1>`);
+          break;
+        case 'select':
+          const optionsArray = item.customization.split(',');
+          const optionsHTMLArray= [];
+          optionsArray.forEach((item) => {
+            optionsHTMLArray.push( `<option value=${item }>${item}</option>`)
+          })
+          let optionsHTML =  optionsHTMLArray.join('');
+          finalTemplate.push(`<label>${item.name}</label><select>${optionsHTML}</select>`);
+          break;
+        default:
+      }
+    })
+    finalTemplate.push('</form>');
+
+    const templateString = finalTemplate.join('');
+    const standardsString = `{state.standardsSelected.standardsSet}-{state.standardsSelected.gradeLevel}`;
+    const nameString = state.names.templateName;
+
+    const templateObject = {
+      name: nameString,
+      standards: standardsString,
+      lessonTemplateString: templateString,
+      users_id: 1
+    };
+
+    fetch('https://planrightdb.herokuapp.com/lessontemplates',  {
+          method: 'POST',
+          headers: new Headers({'Content-Type': 'application/json'}),
+          body: JSON.stringify(templateObject)
+        })
+        .then(res => res.json())
+        .then(res => commit('updateLessonTemplates', res));
+  },
+  getLessonTemplates({ commit }) {
+    fetch('https://planrightdb.herokuapp.com/lessontemplates')
+      .then(res => res.json())
+      .then(res => commit('saveLessonTemplates', res));
+  },
+  getLessonPlans({ commit }) {
+    fetch('https://planrightdb.herokuapp.com/lessonplans')
+      .then(res => res.json())
+      .then(res => commit('saveLessonPlans', res))
+      .then(commit('getFolders'));
+  },
+  addFolder: ({ commit }, payload ) => {
+    commit('addFolder', payload)
+  },
   // searchStandards({ commit }) {
   //   var client = algoliasearch('O7L4OQENOZ', 'def640649a42fff2f56df3c284c27230');
   //   var index = client.initIndex('common-standards-project');
@@ -110,9 +199,12 @@ const getters = {
   lessonComponents: state => state.lessonComponents,
   selectedComponentsList: state => state.selectedComponentsList,
   arrangeComponentArray: state => state.arrangeComponentArray,
-  templateName: state => state.templateName,
+  names: state => state.names,
   arrangeConfirm: state => state.arrangeConfirm,
   saveTemplateConfirm: state => state.saveTemplateConfirm,
+  lessonTemplates: state => state.lessonTemplates,
+  lessonPlans: state => state.lessonPlans,
+  folders: state => state.folders,
 };
 
 // A Vuex instance is created by combining the state, mutations, actions,

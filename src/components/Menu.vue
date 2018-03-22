@@ -42,11 +42,11 @@ export default {
 #menu a {
   height: 60%;
   width: 16vw;
-  color: #120832;
-  font-size: 1rem;
+  color: white;
+  font-size: 1.3rem;
   text-decoration: none;
   background-color: #D09400;
-  border: solid white 1px;
+  border: solid #120832 1px;
   border-radius: 10px;
   display: flex;
   flex-flow: column;
