@@ -2,7 +2,14 @@
   <div id="plan-history">
     <Header />
     <Menu />
-    <div id="current-view">
+    <div id="history-menu">
+      <h2>Select a Folder:</h2>
+      <form>
+        <select v-model="selectedFolder" name="templates">
+          <option value="">Select a Folder</option>
+          <option  v-for="folder in folders" :value="folder">{{folder}}</option>
+        </select>
+      </form>
     </div>
   </div>
 </template>
@@ -20,12 +27,18 @@ export default {
   },
   data() {
     return {
+      selectedFolder:'',
     };
   },
   computed: mapGetters([
+    'folders',
   ]),
   methods: mapActions([
-  ])
+  ]),
+  mounted(){
+    this.getLessonTemplates();
+    this.getLessonPlans();
+  }
 };
 </script>
 
@@ -34,13 +47,35 @@ export default {
 #plan-history {
   display: grid;
   grid-template-rows: 20vh 10vh 70vh;
-  grid-template-columns: 10vw 20vw 20vw 20vw 20vw 10vw;
+  grid-template-columns: 30vw 70vw;
 }
 
-
-#current-view {
+#history-menu {
   grid-row: 3/4;
-  grid-column: 1/end;
+  grid-column: 1/2;
+  background-color: #AFADB3;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+}
 
+#history-menu h2 {
+  margin: 2rem 0rem .7rem 0rem;
+  font-size: 1.4rem;
+}
+
+#history-menu form {
+  width: 90%;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#history-menu select {
+  width: 100%;
+  height: 2rem;
+  margin: .5rem 0rem .5rem 0rem;
 }
 </style>

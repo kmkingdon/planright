@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-var algoliasearch = require('algoliasearch');
+import Vue from "vue";
+import Vuex from "vuex";
+var algoliasearch = require("algoliasearch");
 Vue.use(Vuex);
 
 const state = {
@@ -11,8 +11,8 @@ const state = {
   saveLessonConfirm: false,
   templateStep: 1,
   standardsSelected: {
-    standardsSet: '',
-    gradeLevel: '',
+    standardsSet: "",
+    gradeLevel: ""
   },
   lessonComponents: [],
   lessonTemplates: [],
@@ -21,9 +21,10 @@ const state = {
   selectedComponentsList: [],
   arrangeComponentArray: [],
   names: {
-    templateName: '',
-    lessonName: '',
-  },
+    templateName: "",
+    lessonName: "",
+    folderName: ""
+  }
 };
 
 const mutations = {
@@ -53,38 +54,51 @@ const mutations = {
   saveLessonPlans(state, res) {
     state.lessonPlans = res.plans;
   },
-  getFolders(state) {
-    setTimeout(()=> {
-      state.lessonPlans.forEach(lesson => {
-        state.folders.push(lesson.fileName);
-      });
-    }, 5000)
+  updateLessonPlans(state, res) {
+    state.saveLessonConfirm = true;
+    state.lessonPlans.push(res.plans);
+    setTimeout(function() {
+      state.saveLessonConfirm = false;
+    }, 5000);
   },
-  resetTemplateVariables(state){
+  getFolders(state) {
+    setTimeout(() => {
+      const folderArray = [];
+      state.folders.push(lesson.fileName);
+    }, 3000);
+  },
+  resetTemplateVariables(state) {
     state.saveTemplateConfirm = false;
-    state.names.templateName = '';
+    state.names.templateName = "";
     state.arrangeComponentArray = [];
     state.templateStep = 1;
-    state.standardsSelected = { standardsSet: '', gradeLevel: '', };
+    state.standardsSelected = { standardsSet: "", gradeLevel: "" };
   },
   saveSelectedComponents(state, event) {
-    if(state.selectedComponentsList.filter(item => event.target.id == item.id).length === 0) {
+    if (
+      state.selectedComponentsList.filter(item => event.target.id == item.id)
+        .length === 0
+    ) {
       state.selectedComponentsList.push({
         id: parseInt(event.target.id),
-        htmlType: event.target.value,
+        htmlType: event.target.value
       });
     } else {
       state.selectedComponentsList.forEach(item => {
-        if(item.id === event.id) {
+        if (item.id === event.id) {
           item.htmlType = event.target.value;
         }
-      })
+      });
     }
   },
   arrangeComponentList(state) {
     const filterById = (array, id) => array.filter(item => item.id === id);
-    const list = state.selectedComponentsList.map((component) => {
-      return Object.assign({}, component, filterById(state.lessonComponents, component.id)[0])
+    const list = state.selectedComponentsList.map(component => {
+      return Object.assign(
+        {},
+        component,
+        filterById(state.lessonComponents, component.id)[0]
+      );
     });
     state.arrangeComponentArray = list;
   },
@@ -98,57 +112,74 @@ const mutations = {
       component.order = i;
     });
     state.arrangeConfirm = true;
-    setTimeout(function(){state.arrangeConfirm = false}, 5000);
+    setTimeout(function() {
+      state.arrangeConfirm = false;
+    }, 5000);
   },
-  addFolder(payload) {
-    state.folders.push(payload);
+  addFolder(state) {
+    state.folders.forEach(folder => {
+      if (state.names.folderName !== folder) {
+        state.folders.push(state.names.folderName);
+        state.names.folderName = "";
+      }
+    });
   }
 };
 
-
 const actions = {
-  openSettings: ({ commit }) => commit('openSettings'),
-  changeTemplateStepNext: ({ commit }) => commit('changeTemplateStepNext'),
-  changeTemplateStepBack: ({ commit }) => commit('changeTemplateStepBack'),
-  resetTemplateVariables: ({ commit }) => commit('resetTemplateVariables'),
+  openSettings: ({ commit }) => commit("openSettings"),
+  changeTemplateStepNext: ({ commit }) => commit("changeTemplateStepNext"),
+  changeTemplateStepBack: ({ commit }) => commit("changeTemplateStepBack"),
+  resetTemplateVariables: ({ commit }) => commit("resetTemplateVariables"),
+  addFolder: ({ commit }) => commit("addFolder"),
   getComponents({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/components')
+    fetch("https://planrightdb.herokuapp.com/components")
       .then(res => res.json())
-      .then(res => commit('saveComponents', res));
+      .then(res => commit("saveComponents", res));
   },
   saveSelectedComponents: ({ commit }, event) => {
-    commit('saveSelectedComponents', event)
+    commit("saveSelectedComponents", event);
   },
-  arrangeComponentList: ({ commit }) => commit('arrangeComponentList'),
-  saveOrder: ({ commit }, {oldIndex, newIndex}) => {
-    commit('saveOrder', {oldIndex, newIndex})
+  arrangeComponentList: ({ commit }) => commit("arrangeComponentList"),
+  saveOrder: ({ commit }, { oldIndex, newIndex }) => {
+    commit("saveOrder", { oldIndex, newIndex });
   },
-  saveOrderFinal: ({ commit }) => commit('saveOrderFinal'),
+  saveOrderFinal: ({ commit }) => commit("saveOrderFinal"),
   saveTemplate({ commit, state }) {
-    let finalTemplate = ['<form>'];
-    state.arrangeComponentArray.forEach((item) => {
-      switch(item.htmlType) {
-        case 'text':
-          finalTemplate.push(`<label>${item.name}</label><textarea></textarea>`);
+    let finalTemplate = ["<form>"];
+    state.arrangeComponentArray.forEach(item => {
+      switch (item.htmlType) {
+        case "text":
+          finalTemplate.push(
+            `<label>${item.name}</label><input type='text' id='${item.name}'/>`
+          );
           break;
-        case 'const':
-          finalTemplate.push(`<label>${item.name}</label><h1>${item.customization}</h1>`);
+        case "const":
+          finalTemplate.push(
+            `<label>${item.name}</label><input type='text' id='${
+              item.name
+            }' value='${item.customization}'/>`
+          );
           break;
-        case 'select':
-          const optionsArray = item.customization.split(',');
-          const optionsHTMLArray= [];
-          optionsArray.forEach((item) => {
-            optionsHTMLArray.push( `<option value=${item }>${item}</option>`)
-          })
-          let optionsHTML =  optionsHTMLArray.join('');
-          finalTemplate.push(`<label>${item.name}</label><select>${optionsHTML}</select>`);
+        case "select":
+          const optionsArray = item.customization.split(",");
+          const optionsHTMLArray = [];
+          optionsArray.forEach(item => {
+            optionsHTMLArray.push(`<option value='${item}'>${item}</option>`);
+          });
+          let optionsHTML = optionsHTMLArray.join("");
+          finalTemplate.push(
+            `<label>${item.name}</label><select id='${
+              item.name
+            }'><option value=''>Select</option>${optionsHTML}</select>`
+          );
           break;
         default:
       }
-    })
-    finalTemplate.push('</form>');
+    });
+    finalTemplate.push("</form>");
 
-    const templateString = finalTemplate.join('');
+    const templateString = finalTemplate.join("");
     const standardsString = `{state.standardsSelected.standardsSet}-{state.standardsSelected.gradeLevel}`;
     const nameString = state.names.templateName;
 
@@ -159,28 +190,35 @@ const actions = {
       users_id: 1
     };
 
-    fetch('https://planrightdb.herokuapp.com/lessontemplates',  {
-          method: 'POST',
-          headers: new Headers({'Content-Type': 'application/json'}),
-          body: JSON.stringify(templateObject)
-        })
-        .then(res => res.json())
-        .then(res => commit('updateLessonTemplates', res));
+    fetch("https://planrightdb.herokuapp.com/lessontemplates", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(templateObject)
+    })
+      .then(res => res.json())
+      .then(res => commit("updateLessonTemplates", res));
   },
   getLessonTemplates({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/lessontemplates')
+    fetch("https://planrightdb.herokuapp.com/lessontemplates")
       .then(res => res.json())
-      .then(res => commit('saveLessonTemplates', res));
+      .then(res => commit("saveLessonTemplates", res));
   },
   getLessonPlans({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/lessonplans')
+    fetch("https://planrightdb.herokuapp.com/lessonplans")
       .then(res => res.json())
-      .then(res => commit('saveLessonPlans', res))
-      .then(commit('getFolders'));
+      .then(res => commit("saveLessonPlans", res))
+      .then(commit("getFolders"));
   },
-  addFolder: ({ commit }, payload ) => {
-    commit('addFolder', payload)
-  },
+  saveLessonPlan: ({ commit }, plan) => {
+    console.log(plan);
+    fetch("https://planrightdb.herokuapp.com/lessonplans", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(plan)
+    })
+      .then(res => res.json())
+      .then(res => commit("updateLessonPlans", res));
+  }
   // searchStandards({ commit }) {
   //   var client = algoliasearch('O7L4OQENOZ', 'def640649a42fff2f56df3c284c27230');
   //   var index = client.initIndex('common-standards-project');
@@ -202,9 +240,10 @@ const getters = {
   names: state => state.names,
   arrangeConfirm: state => state.arrangeConfirm,
   saveTemplateConfirm: state => state.saveTemplateConfirm,
+  saveLessonConfirm: state => state.saveLessonConfirm,
   lessonTemplates: state => state.lessonTemplates,
   lessonPlans: state => state.lessonPlans,
-  folders: state => state.folders,
+  folders: state => state.folders
 };
 
 // A Vuex instance is created by combining the state, mutations, actions,
@@ -213,5 +252,5 @@ export default new Vuex.Store({
   state,
   getters,
   actions,
-  mutations,
+  mutations
 });
