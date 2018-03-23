@@ -63,8 +63,11 @@ const mutations = {
   },
   getFolders(state) {
     setTimeout(() => {
-      const folderArray = [];
-      state.folders.push(lesson.fileName);
+      state.lessonPlans.forEach(lesson => {
+        if(state.folders.includes(lesson.fileName) === false){
+          state.folders.push(lesson.fileName);
+        }
+      })
     }, 3000);
   },
   resetTemplateVariables(state) {
