@@ -9,11 +9,11 @@
           <p v-if="saveTemplateConfirm"> Template Saved!</p>
         </form>
       </div>
-      <button id="back" v-on:click="changeTemplateStepBack">
-        <img  src="../../../static/arrow.png" alt="simple-logo"/>
-        <h3>Back</h3>
-      </button>
-      <router-link id="next" v-if="saveTemplateConfirm" to="/lessonplan">To Lesson Plans</router-link>
+      <img v-on:click="restartTemplate" id="restart" src="../../../static/restart.png" alt="restart"/>
+      <router-link id="next" v-if="saveTemplateConfirm" to="/lessonplan">
+        To Lesson Plans
+        <img src="../../../static/arrowright.png" alt="simple-logo"/>
+      </router-link>
     </div>
 </template>
 
@@ -36,6 +36,7 @@ export default {
   methods: mapActions([
     'changeTemplateStepBack',
     'saveTemplate',
+    'restartTemplate',
   ])
 };
 </script>
@@ -44,28 +45,57 @@ export default {
 <style scoped>
 .template-views {
   display: grid;
-  grid-template-rows: 8vh 55vh 8vh;
-  grid-template-columns: 35vw 35vw;
+  grid-template-rows: 15vh 55vh;
+  grid-template-columns: 10vw 40vw 20vw;
+}
+
+#restart {
+  grid-row: 1/2;
+  grid-column: 1/2;
+  height: 60%;
+  justify-self: center;
+  align-self: center;
+  cursor: pointer;
+}
+#next {
+  grid-row: 1/2;
+  grid-column: 3/4;
+  justify-self: center;
+  align-self: center;
+  height: 30%;
+  width: 15vw;
+  text-decoration: none;
+  color: #D09400;
+  font-size: 1.2rem;
+  background-color:#495669;
+  border: solid #120832 1px;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#next img {
+  height: 60%;
+  width: 15%;
+  margin-left: .5rem;
 }
 
 .template-views h2 {
   grid-row: 1/2;
-  grid-column: 1/3;
+  grid-column: 2/3;
   justify-self: center;
   align-self: center;
-  font-size: 1.7rem;
+  font-size: 2.2rem;
   font-family: 'Nanum+Myeongjo';
-  color:white;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
+  color: #495669;
+  font-weight: bold;
 }
 
 #save {
   grid-row: 2/3;
-  grid-column: 1/3;
+  grid-column: 1/4;
   display: flex;
   flex-flow: column;
   justify-content: center;
@@ -106,64 +136,6 @@ export default {
 #save p {
   margin-top: 1rem;
   color: #D09400;
-}
-
-#back{
-  grid-row: 3/4;
-  grid-column: 1/2;
-  justify-self: center;
-  align-self: start;
-  height: 50%;
-  width: 13vw;
-  text-decoration: none;
-  background-color:#939097;
-  border: solid #120832 1px;
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-}
-
-#back h3{
-  color:#D09400 ;
-  font-size: 1.3rem;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
-}
-
-#back img {
-  height: 60%;
-  width: 12%;
-  margin-right: .5rem;
-}
-
-#next {
-  grid-row: 3/4;
-  grid-column: 2/3;
-  justify-self: center;
-  align-self: start;
-  height: 50%;
-  width: 13vw;
-  text-decoration: none;
-  background-color:#939097;
-  border: solid #120832 1px;
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-  color:#D09400 ;
-  text-decoration: none;
-  font-size: 1.2rem;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
 }
 
 </style>

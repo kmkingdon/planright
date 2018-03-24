@@ -9,6 +9,9 @@ const state = {
   arrangeConfirm: false,
   saveTemplateConfirm: false,
   saveLessonConfirm: false,
+  saveGoalConfirm: false,
+  saveFinalReflectionConfirm: false,
+  saveLessonReflectionConfirm: false,
   templateStep: 1,
   standardsSelected: {
     standardsSet: "",
@@ -19,11 +22,36 @@ const state = {
   lessonPlans: [],
   folders: [],
   selectedComponentsList: [],
+  addModal: {
+    show: false,
+    name: '',
+  },
   arrangeComponentArray: [],
   names: {
     templateName: "",
     lessonName: "",
     folderName: ""
+  },
+  lessonHistory: {
+    selectedFolder:'',
+    selectedLesson: 0,
+    reflectionAdded: false,
+    reflectionGoal: 0,
+    warning: false,
+  },
+  lessonReflection: {
+    actions: '',
+    progress: '',
+    improve: '',
+  },
+  goals: [],
+  goalData: {
+    id: NaN,
+    component: 0,
+    strengths: '',
+    improve: '',
+    actions: '',
+    name: '',
   }
 };
 
@@ -41,8 +69,18 @@ const mutations = {
   changeTemplateStepBack(state) {
     state.templateStep--;
   },
+  selectGoal(state) {
+    state.goalData.id = 0;
+  },
   saveComponents(state, res) {
-    state.lessonComponents = res.users;
+    state.lessonComponents = res.components;
+  },
+  updateLessonComponents(state, res) {
+    state.lessonComponents.push(res.components);
+    state.addModal = {
+      show: false,
+      name: '',
+    };
   },
   saveLessonTemplates(state, res) {
     state.lessonTemplates = res.templates;
@@ -53,6 +91,21 @@ const mutations = {
   },
   saveLessonPlans(state, res) {
     state.lessonPlans = res.plans;
+  },
+  selectLesson(state, event) {
+    state.lessonHistory.selectedLesson = event.target.id;
+  },
+  addReflection(state) {
+    if(state.lessonHistory.selectedLesson !== 0 && state.lessonHistory.reflectionGoal !== 0 ) {
+      state.lessonHistory.warning = false;
+      if(state.lessonHistory.reflectionAdded === true) {
+        state.lessonHistory.reflectionAdded = false;
+      } else {
+        state.lessonHistory.reflectionAdded = true;
+      }
+    } else {
+      state.lessonHistory.warning = true;
+    }
   },
   updateLessonPlans(state, res) {
     state.saveLessonConfirm = true;
@@ -126,6 +179,59 @@ const mutations = {
         state.names.folderName = "";
       }
     });
+  },
+  saveGoals(state, res) {
+    state.goals = res.goals;
+  },
+  selectGoalComponent(state, event) {
+    state.goalData.component = event.target.id;
+  },
+  updateGoals(state, res) {
+    state.saveGoalConfirm = true;
+    state.goals.push(res.goals);
+    state.goalData = {
+      component: 0,
+      strengths: '',
+      improve: '',
+      actions: '',
+      name: '',
+      reflection: '',
+    };
+    setTimeout(function() {
+      state.saveGoalConfirm = false;
+    }, 5000);
+  },
+  updateGoalReflections(state, res) {
+    state.saveFinalReflectionConfirm = true;
+    let index;
+    state.goals.forEach((goal, i) => {
+      if(goal.id === res.goals.id) {
+        index = i;
+      }
+    })
+    state.goals.splice(index , 1, res.goals);
+    setTimeout(function() {
+      state.saveFinalReflectionConfirm = false;
+    }, 5000);
+  },
+  updateLessonReflections(state, res) {
+    state.saveLessonReflectionConfirm = true;
+    let index;
+    state.lessonPlans.forEach((plan, i) => {
+      if(plan.id === res.plans.id) {
+        index = i;
+      }
+    })
+    state.lessonPlans.splice(index , 1, res.plans);
+    state.lessonHistory.reflectionAdded = false;
+    state.lessonReflection = {
+      actions: '',
+      progress: '',
+      improve: '',
+    };
+    setTimeout(function() {
+      state.saveLessonReflectionConfirm = false;
+    }, 5000);
   }
 };
 
@@ -134,7 +240,10 @@ const actions = {
   changeTemplateStepNext: ({ commit }) => commit("changeTemplateStepNext"),
   changeTemplateStepBack: ({ commit }) => commit("changeTemplateStepBack"),
   resetTemplateVariables: ({ commit }) => commit("resetTemplateVariables"),
+  selectGoal: ({ commit }) => commit("selectGoal"),
   addFolder: ({ commit }) => commit("addFolder"),
+  addReflection: ({ commit }) => commit("addReflection"),
+  restartTemplate: ({ commit }) => commit("resetTemplateVariables"),
   getComponents({ commit }) {
     fetch("https://planrightdb.herokuapp.com/components")
       .then(res => res.json())
@@ -213,7 +322,6 @@ const actions = {
       .then(commit("getFolders"));
   },
   saveLessonPlan: ({ commit }, plan) => {
-    console.log(plan);
     fetch("https://planrightdb.herokuapp.com/lessonplans", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
@@ -221,6 +329,80 @@ const actions = {
     })
       .then(res => res.json())
       .then(res => commit("updateLessonPlans", res));
+  },
+  selectLesson: ({ commit }, event) => {
+    commit("selectLesson", event);
+  },
+  getGoals({ commit }) {
+    fetch("https://planrightdb.herokuapp.com/goals")
+      .then(res => res.json())
+      .then(res => commit("saveGoals", res))
+  },
+  selectGoalComponent: ({ commit }, event) => {
+    commit("selectGoalComponent", event);
+  },
+  postGoal: ({ commit, state }) => {
+    const goalObject = {
+        componentId: state.goalData.component,
+        name: state.goalData.name,
+        goalData: {Strengths:state.goalData.strengths, Improvements:state.goalData.improve, Actions:state.goalData.actions},
+        goalFinalReflection: '',
+        coachCommentString: '',
+        users_id: 1
+    }
+    fetch("https://planrightdb.herokuapp.com/goals", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(goalObject)
+    })
+      .then(res => res.json())
+      .then(res => commit("updateGoals", res));
+  },
+  saveFinalReflection: ({ commit, state }) => {
+    const goalObject = {
+        goalFinalReflection: state.goalData.reflection,
+    }
+    const putAPI = `https://planrightdb.herokuapp.com/goals/${state.goalData.id}`;
+
+    fetch(putAPI, {
+      method: "PUT",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(goalObject)
+    })
+      .then(res => res.json())
+      .then(res => commit('updateGoalReflections', res));
+  },
+  addLessonReflection: ({ commit, state }) => {
+    const reflectionObject = {
+        teacherReflection: {
+          actions: state.lessonReflection.actions,
+          progress: state.lessonReflection.progress,
+          improve: state.lessonReflection.improve,
+        }
+    };
+    const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.lessonHistory.selectedLesson}`;
+    fetch(putAPI, {
+      method: "PUT",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(reflectionObject)
+    })
+      .then(res => res.json())
+      .then(res => commit('updateLessonReflections', res));
+  },
+  addLessonComponent: ({ commit, state }) => {
+    const lessonComponentObject = {
+        name: state.addModal.name,
+        order: 0,
+        fixed: false,
+        users_id: 1,
+    }
+    fetch("https://planrightdb.herokuapp.com/components", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(lessonComponentObject)
+    })
+      .then(res => res.json())
+      .then(res => commit("updateLessonComponents", res));
   }
   // searchStandards({ commit }) {
   //   var client = algoliasearch('O7L4OQENOZ', 'def640649a42fff2f56df3c284c27230');
@@ -238,15 +420,23 @@ const getters = {
   templateStep: state => state.templateStep,
   standardsSelected: state => state.standardsSelected,
   lessonComponents: state => state.lessonComponents,
+  addModal: state => state.addModal,
   selectedComponentsList: state => state.selectedComponentsList,
   arrangeComponentArray: state => state.arrangeComponentArray,
   names: state => state.names,
   arrangeConfirm: state => state.arrangeConfirm,
   saveTemplateConfirm: state => state.saveTemplateConfirm,
   saveLessonConfirm: state => state.saveLessonConfirm,
+  saveGoalConfirm: state => state.saveGoalConfirm,
   lessonTemplates: state => state.lessonTemplates,
   lessonPlans: state => state.lessonPlans,
-  folders: state => state.folders
+  folders: state => state.folders,
+  goals: state => state.goals,
+  goalData: state => state.goalData,
+  saveFinalReflectionConfirm: state => state.saveFinalReflectionConfirm,
+  lessonHistory: state => state.lessonHistory,
+  lessonReflection: state => state.lessonReflection,
+  saveLessonReflectionConfirm: state => state.saveLessonReflectionConfirm,
 };
 
 // A Vuex instance is created by combining the state, mutations, actions,

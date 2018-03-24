@@ -3,33 +3,62 @@
     <Header />
     <Menu />
     <div id="goal-menu">
-      <h2>Make a New Goal</h2>
+      <h2>Make a New Goal:</h2>
       <button v-on:click="newGoal">New Goal</button>
+      <h2>Open a Goal:</h2>
+      <select v-model="goalData.id" name="goal">
+        <option value="">Select a Goal</option>
+        <option v-for="goal in goals" :value="goal.id">{{goal.name}}</option>
+      </select>
     </div>
     <div id="goal-display">
-      <div v-if="goalSelected === 0" id="new-goal">
+      <div v-if="goalData.id === 0" id="new-goal">
         <h1>Make a New Goal:</h1>
         <h2>Select a Component of Your Lesson Plan:</h2>
         <div id="component-select">
           <div id="component-select-inner">
-            <div v-on:click="componentSelect"  v-for="component in lessonComponents" v-bind:class="{active:(componentSelected == component.id)}" :id="component.id">
+            <div v-on:click="componentSelect"  v-for="component in lessonComponents" v-bind:class="{active:(goalData.component == component.id)}" :id="component.id">
               <h3 :id="component.id">{{component.name}}</h3>
             </div>
           </div>
         </div>
-        <h3 v-for="component in lessonComponents" v-if="component.id == componentSelected">Your Goal Will Focus On: {{component.name}}</h3>
-        <form>
+        <h3 v-for="component in lessonComponents" v-if="component.id == goalData.component">Your Goal Will Focus On: {{component.name}}</h3>
+        <form v-on:submit.prevent="postGoal">
+          <label for="name">What would you like to name this goal?</label>
+          <input required v-model="goalData.name" type="text" name="name" >
           <label for="strengths">What are your strengths with this part of your lesson plan?</label>
-          <input type="text" name="strengths" value="">
+          <input  required v-model="goalData.strengths" type="text" name="strengths" >
           <label for="improve">What would your like to improve in this part of your lesson plan?</label>
-          <input type="text" name="improve" value="">
+          <input  required v-model="goalData.improve" type="text" name="improve" >
           <label for="actions">What are at least two actions that you will take to make this improvement?</label>
-          <input type="text" name="actions" value="">
+          <input  required v-model="goalData.actions" type="text" name="actions" >
           <input id="save-goal" type="submit" value="Save Goal"/>
+          <p v-if="saveGoalConfirm">Goal Saved!</p>
         </form>
       </div>
-    </div>
-    <div id="reflection-menu">
+      <div id="goal-view" v-for="goal in goals" v-if="goalData.id === goal.id">
+        <h1>{{goal.name}}</h1>
+        <h2 v-for="component in lessonComponents" v-if="component.id === goal.componentId"> Your goal focusing on: {{component.name}}</h2>
+        <ul>
+          <li v-for="(key, value) in goal.goalData">
+            <h3>{{value}}</h3>
+            <h4>{{key}}</h4>
+          </li>
+        </ul>
+        <div id="final-reflection" v-if="goal.goalFinalReflection === ''">
+          <h6>Final Reflection</h6>
+          <form v-on:submit.prevent="saveFinalReflection">
+            <label for="reflection">How have the actions helped you improve this part of your teaching?</label>
+            <textarea required v-model="goalData.reflection"  name="reflection"></textarea>
+            <input type="submit" name="" value="Save Reflection">
+            <p v-if="saveFinalReflectionConfirm">Final Reflection Saved!</p>
+          </form>
+        </div>
+        <div id="final-reflection-complete" v-if="goal.goalFinalReflection !== ''">
+          <h6>Final Reflection</h6>
+          <p>{{goal.goalFinalReflection}}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -48,28 +77,34 @@ export default {
   data() {
     return {
       goalSelected: NaN,
-      componentSelected: 0,
     };
   },
   computed: mapGetters([
-    'lessonComponents'
+    'lessonComponents',
+    'goals',
+    'goalData',
+    'saveGoalConfirm',
+    'saveFinalReflectionConfirm',
   ]),
   methods:{
     ...mapActions([
       'getLessonPlans',
       'getComponents',
+      'getGoals',
+      'postGoal',
+      'saveFinalReflection',
     ]),
     newGoal(){
-      this.goalSelected = 0;
+      this.$store.dispatch('selectGoal');
     },
     componentSelect(event){
-      console.log(event.target)
-      this.componentSelected = event.target.id;
+      this.$store.dispatch('selectGoalComponent', event);
     }
   },
   mounted(){
     this.getLessonPlans();
     this.getComponents();
+    this.getGoals();
   }
 };
 </script>
@@ -79,7 +114,7 @@ export default {
 #goal-dashboard {
   display: grid;
   grid-template-rows: 20vh 10vh 70vh;
-  grid-template-columns: 20vw 60vw 20vw;
+  grid-template-columns: 30vw 70vw;
 }
 
 #goal-menu {
@@ -106,6 +141,12 @@ export default {
   background-color: #D09400;
   border: solid #120832 1px;
   border-radius: 10px;
+}
+
+#goal-menu select {
+  width: 60%;
+  height: 2rem;
+  margin-top: 1rem;
 }
 
 #goal-display {
@@ -185,7 +226,7 @@ export default {
 
 #new-goal form {
   width: 90%;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -201,30 +242,145 @@ export default {
 
 #new-goal input {
   width: 100%;
-  height: 1.5rem;
+  height: 1.2rem;
   font-size: 1rem;
-  padding-bottom: .8rem;
+  padding-bottom: .4rem;
   border: solid #AFADB3 1px;
 }
 
 #save-goal {
   width: 30% !important;
-  height: 2.7rem !important;
+  height: 2rem !important;
   color: white;
   font-size: 1.3rem !important;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   background-color: #D09400;
   border: solid #120832 1px;
   border-radius: 10px;
 }
 
-#reflection-menu {
-  grid-row: 3/4;
-  grid-column: 3/4;
+p {
+  font-size: 1.2rem;
+  color: #D09400;
+  text-align: center;
+  padding: .5rem;
+}
+
+#goal-view {
+  width: 100%;
+  height: 70vh;
+}
+
+#goal-view h1{
+  width:  100%;
+  height: 6vh;
+  text-align: center;
+  font-size: 1.8rem;
+  padding-top: .6rem;
+  border: solid #AFADB3 1px;
+}
+
+#goal-view h2 {
+  width:  100%;
+  height: 4vh;
+  text-align: center;
+  font-size: 1rem;
+  border: solid #AFADB3 1px;
+}
+
+#goal-view ul {
+  width: 100%;
+  height: 30vh;
+}
+
+#goal-view li {
+  box-sizing: border-box;
+  width: 100%;
+  height: 10vh;
+  border: solid #AFADB3 1px;
+}
+
+#goal-view h3 {
+  font-size: 1rem;
+  padding: .4rem 0rem 0rem 4rem;
   background-color: #AFADB3;
+}
+
+#goal-view h4 {
+  font-size: 1rem;
+  text-align: center;
+  padding: .3rem .5rem;
+}
+
+#final-reflection {
+  width: 100%;
+  height: 30vh;
+  border: solid #AFADB3 1px;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
 }
+
+#final-reflection h6 {
+  font-size: 1.6rem;
+  padding-top: .6rem;
+  color: #D09400;
+}
+
+#final-reflection form {
+  width: 90%;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#final-reflection label {
+  width: 100%;
+  text-align: left;
+  font-size: 1.2rem;
+  padding: .8rem 0rem;
+}
+
+#final-reflection textarea {
+  width: 100%;
+  height: 5vh;
+  padding: .8rem 0rem;
+}
+
+#final-reflection input {
+  width: 40%;
+  height: 2rem;
+  color: white;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  background-color: #D09400;
+  border: solid #120832 1px;
+  border-radius: 10px;
+}
+
+#final-reflection-complete {
+  width: 100%;
+  height: 30vh;
+  border: solid #AFADB3 1px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#final-reflection-complete h6 {
+  font-size: 1.6rem;
+  padding-top: .6rem;
+  color: #D09400;
+}
+
+#final-reflection-complete p {
+  font-size: 1.2rem;
+  padding: 1rem;
+  color: black;
+}
+
+
 </style>

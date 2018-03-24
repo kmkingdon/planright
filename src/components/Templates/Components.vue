@@ -14,46 +14,51 @@
             </select>
           </li>
         </ul>
+        <div v-on:click="addModal.show = true" id="add-component">
+          <h4>+</h4>
+        </div>
       </div>
-      <button id="back" v-on:click="changeTemplateStepBack">
-        <img  src="../../../static/arrow.png" alt="simple-logo"/>
-        <h3>Back</h3>
-      </button>
+      <img v-on:click="restartTemplate" id="restart" src="../../../static/restart.png" alt="restart"/>
       <button id="next" v-on:click="changeTemplateStepNext">
         <h3>Next</h3>
         <img  src="../../../static/arrowright.png" alt="simple-logo"/>
       </button>
+      <ModalAdd v-if="addModal.show" @close="addModal.show = false" />
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ModalAdd from '@/components/Templates/ModalAdd';
 
 export default {
   name: 'Components',
   components: {
+    ModalAdd,
   },
   data() {
     return {
       selectedComponents:[],
       htmlTypes:{
         const: [],
-      }
+      },
     };
   },
   computed: mapGetters([
     'templateStep',
     'lessonComponents',
     'selectedComponentsList',
+    'addModal',
   ]),
   methods: {
   ...mapActions([
     'changeTemplateStepBack',
     'changeTemplateStepNext',
     'getComponents',
+    'restartTemplate',
   ]),
     saveChange(event){
-    this.$store.dispatch('saveSelectedComponents', event)
+      this.$store.dispatch('saveSelectedComponents', event)
     }
   },
   mounted(){
@@ -66,35 +71,71 @@ export default {
 <style scoped>
 .template-views {
   display: grid;
-  grid-template-rows: 8vh 55vh 8vh;
-  grid-template-columns: 35vw 35vw;
+  grid-template-rows: 15vh 55vh;
+  grid-template-columns: 10vw 40vw 20vw;
+}
+
+#restart {
+  grid-row: 1/2;
+  grid-column: 1/2;
+  height: 60%;
+  justify-self: center;
+  align-self: center;
+  cursor: pointer;
 }
 
 .template-views h2 {
   grid-row: 1/2;
-  grid-column: 1/3;
+  grid-column: 2/3;
   justify-self: center;
   align-self: center;
-  font-size: 1.5rem;
+  font-size: 2.2rem;
   font-family: 'Nanum+Myeongjo';
-  color:white;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
+  color: #495669;
+  font-weight: bold;
+}
+
+#next {
+  grid-row: 1/2;
+  grid-column: 3/4;
+  justify-self: center;
+  align-self: center;
+  height: 30%;
+  width: 13vw;
+  text-decoration: none;
+  background-color:#495669;
+  border: solid #120832 1px;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#next h3 {
+  color: #D09400;
+  font-size: 1.2rem;
+}
+#next img {
+  height: 60%;
+  width: 15%;
+  margin-left: .5rem;
 }
 
 #components{
   grid-row: 2/3;
-  grid-column: 1/3;
-  display: flex;
-  flex-flow: row wrap;
+  grid-column: 1/4;
+  display: grid;
+  grid-template-rows: 45vh 10vh;
+  grid-template-columns: 65vw 5vw;
 }
 
 #components ul {
+  grid-row: 1/3;
+  grid-column: 1/3;
   display: flex;
   flex-flow: row wrap;
+  margin-left: 1rem;
 }
 
 #components li {
@@ -106,10 +147,10 @@ export default {
 }
 
 #components h3 {
-  width: 45%;
+  width: 50%;
   margin-left: .5rem;
   margin-bottom: .5rem;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .checkbox {
@@ -121,73 +162,29 @@ export default {
 }
 
 .input {
-  width: 35%;
+  width: 30%;
   height: 1.5rem;
 }
 
-#back{
-  grid-row: 3/4;
-  grid-column: 1/2;
-  justify-self: center;
-  align-self: start;
-  height: 50%;
-  width: 13vw;
-  text-decoration: none;
-  background-color:#939097;
-  border: solid #120832 1px;
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-}
-
-#back h3{
-  color:#D09400 ;
-  font-size: 1.3rem;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
-}
-
-#back img {
-  height: 60%;
-  width: 12%;
-  margin-right: .5rem;
-}
-
-#next {
-  grid-row: 3/4;
+#add-component {
+  grid-row: 2/3;
   grid-column: 2/3;
   justify-self: center;
-  align-self: start;
-  height: 50%;
-  width: 13vw;
-  text-decoration: none;
-  background-color:#939097;
+  align-self: center;
+  width: 2rem;
+  height: 2rem;
+  background-color:#495669;
   border: solid #120832 1px;
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
-#next h3 {
-  color:#D09400 ;
-  font-size: 1.2rem;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
-}
-#next img {
-  height: 60%;
-  width: 12%;
-  margin-left: .5rem;
+#add-component h4{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: white;
+  font-size: 1.7rem;
 }
 
 </style>

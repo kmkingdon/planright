@@ -17,7 +17,7 @@
           <h2 v-bind:class="{active:(templateStep === 3)}"> Arrange Your Components </h2>
           <img class="checkboxes" v-if="templateStep <= 4" src="../../static/checkbox.png" />
           <img class="checkboxes" v-if="templateStep > 4" src="../../static/checkboxcompleted.png" />
-          <h2 v-bind:class="{active:(templateStep === 4)}"> Customize Template Components </h2>
+          <h2 v-bind:class="{active:(templateStep === 4)}"> Customize Components </h2>
           <img class="checkboxes" v-if="templateStep <= 5 && !saveTemplateConfirm" src="../../static/checkbox.png" />
           <img class="checkboxes" v-if="saveTemplateConfirm" src="../../static/checkboxcompleted.png" />
           <h2 v-bind:class="{active:(templateStep === 5)}"> Save Your Template</h2>
@@ -100,7 +100,7 @@ aside {
   grid-column: 1/2;
   background-color: #AFADB3;
   display: grid;
-  grid-template-rows: 8vh 62vh;
+  grid-template-rows: 15vh 55vh;
   grid-template-columns: 30vw;
 }
 
@@ -109,14 +109,9 @@ aside h1 {
   grid-column: 1/end;
   justify-self: center;
   align-self: center;
+  font-size: 2.2rem;
   font-family: 'Nanum+Myeongjo';
-  font-size: 1.7rem;
   color: white;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
 }
 
 #template-steps {
@@ -129,19 +124,20 @@ aside h1 {
 .checkboxes {
   width: 3rem;
   height: 3rem;
-  margin-left: 1rem;
+  margin-left: 2rem;
 }
 
 #template-steps h2 {
   height: 3rem;
   width: 23vw;
-  font-size: 1.2rem;
-  margin-top: .5rem;
+  font-size: 1.4rem;
+  margin-top: .7rem;
   color: #120832;
 }
 
 .active {
   color: white !important;
+  font-weight: bold !important;
   text-shadow:
    -1px -1px 0 #120832,
     1px -1px 0 #120832,

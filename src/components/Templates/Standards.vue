@@ -55,28 +55,51 @@ export default {
 <style scoped>
 .template-views {
   display: grid;
-  grid-template-rows: 8vh 55vh 8vh;
-  grid-template-columns: 35vw 35vw;
+  grid-template-rows: 15vh 55vh;
+  grid-template-columns: 10vw 40vw 20vw;
 }
 
 .template-views h2 {
   grid-row: 1/2;
-  grid-column: 1/3;
+  grid-column: 2/3;
   justify-self: center;
   align-self: center;
-  font-size: 1.7rem;
+  font-size: 2.2rem;
   font-family: 'Nanum+Myeongjo';
-  color:white;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
+  color: #495669;
+  font-weight: bold;
+}
+
+#next {
+  grid-row: 1/2;
+  grid-column: 3/4;
+  justify-self: center;
+  align-self: center;
+  height: 30%;
+  width: 13vw;
+  text-decoration: none;
+  background-color:#495669;
+  border: solid #120832 1px;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#next h3 {
+  color: #D09400;
+  font-size: 1.2rem;
+}
+#next img {
+  height: 60%;
+  width: 15%;
+  margin-left: .5rem;
 }
 
 #standards {
   grid-row: 2/3;
-  grid-column: 1/3;
+  grid-column: 1/4;
   display: flex;
   flex-flow: column;
   justify-content: center;
@@ -104,35 +127,7 @@ export default {
   margin-bottom: 2rem;
 }
 
-#next {
-  grid-row: 3/4;
-  grid-column: 2/3;
-  justify-self: center;
-  align-self: start;
-  height: 50%;
-  width: 13vw;
-  text-decoration: none;
-  background-color:#939097;
-  border: solid #120832 1px;
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-}
 
-#next h3 {
-  color:#D09400 ;
-  font-size: 1.2rem;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
-}
-#next img {
-  height: 60%;
-  width: 12%;
-  margin-left: .5rem;
-}
+
+
 </style>

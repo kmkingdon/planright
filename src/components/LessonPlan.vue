@@ -70,7 +70,7 @@ export default {
     return {
       templateId : 0,
       selectedFolder: '',
-      dateTaught: '2000-01-01',
+      dateTaught: "2000,01,01",
     };
   },
   computed: mapGetters([
@@ -109,16 +109,26 @@ export default {
         lessonTemplateString: templateString,
         lessonPlanData: lessonPlanObject,
         fileName: this.selectedFolder,
-        teacherReflectionString: '',
+        teacherReflection: {},
         coachCommentString: '',
         users_id: 1,
       }
       this.$store.dispatch('saveLessonPlan', lessonPlan)
+    },
+    getCurrentDate() {
+      let currentDate;
+      Date.prototype.toDateInputValue = (function() {
+        var local = new Date();
+        local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+        currentDate= local.toJSON().slice(0,10);
+      }())
+      this.dateTaught = currentDate;
     }
   },
   mounted(){
     this.getLessonTemplates();
     this.getLessonPlans();
+    this.getCurrentDate();
   }
 };
 </script>
