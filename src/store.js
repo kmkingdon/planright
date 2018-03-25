@@ -52,7 +52,8 @@ const state = {
     improve: '',
     actions: '',
     name: '',
-  }
+  },
+  standards: [],
 };
 
 const mutations = {
@@ -182,6 +183,10 @@ const mutations = {
   },
   saveGoals(state, res) {
     state.goals = res.goals;
+  },
+  saveStandards(state, res) {
+    const standardsArray = Object.values(res.data.standards)
+    state.standards = standardsArray;
   },
   selectGoalComponent(state, event) {
     state.goalData.component = event.target.id;
@@ -403,7 +408,16 @@ const actions = {
     })
       .then(res => res.json())
       .then(res => commit("updateLessonComponents", res));
+  },
+  getStandards: ({ commit, state }) => {
+    fetch("http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-04", {
+      method: "GET",
+      headers:{ 'API-KEY': 'GGbhskDed9DkGM9u3pZgR7TU' },
+    })
+      .then(res => res.json())
+      .then(res => commit("saveStandards", res));
   }
+
   // searchStandards({ commit }) {
   //   var client = algoliasearch('O7L4OQENOZ', 'def640649a42fff2f56df3c284c27230');
   //   var index = client.initIndex('common-standards-project');
@@ -429,6 +443,7 @@ const getters = {
   saveLessonConfirm: state => state.saveLessonConfirm,
   saveGoalConfirm: state => state.saveGoalConfirm,
   lessonTemplates: state => state.lessonTemplates,
+  standards: state => state.standards,
   lessonPlans: state => state.lessonPlans,
   folders: state => state.folders,
   goals: state => state.goals,

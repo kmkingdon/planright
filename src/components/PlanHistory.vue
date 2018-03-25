@@ -22,14 +22,14 @@
     <div id="lesson-display">
       <div v-for="lesson in lessonPlans" v-if="lesson.id == lessonHistory.selectedLesson" id="lesson-display-inner">
         <h1>{{lesson.name}}</h1>
-        <h2>Date Taught:{{lesson.dateTaught.split("T")[0]}}</h2>
+        <h2>Date Taught:{{lesson.dateTaught | formatDate}}</h2>
         <ul>
           <li v-for="(value, key) in lesson.lessonPlanData">
             <h3>{{key}}</h3>
             <h4>{{value}}</h4>
           </li>
         </ul>
-        <div id="lesson-reflection-complete"  v-if="lesson.teacherReflection !== {}">
+        <div id="lesson-reflection-complete"  v-if="lesson.teacherReflection.actions !== undefined">
           <h5>Lesson Reflection</h5>
           <h6>Describe how you did your goal actions in this lesson:</h6>
           <p>{{lesson.teacherReflection.actions}}</p>
@@ -78,7 +78,8 @@
 import { mapGetters, mapActions } from 'vuex';
 import Header from '@/components/Header';
 import Menu from '@/components/Menu';
-import jsPDF from 'jsPDF';
+import jsPDF  from "jspdf";
+import moment from 'moment';
 
 export default {
   name: 'PlanHistory',
@@ -112,11 +113,28 @@ export default {
       this.$store.dispatch('selectLesson', event)
     },
     createPDF () {
+
       this.lessonPlans.forEach(lesson => {
-        if(lesson.id == this.selectedLesson) {
+        if(lesson.id == this.lessonHistory.selectedLesson) {
+            let date = lesson.dateTaught;
+            let formatedDate= moment(String(date)).format('MM/DD/YYYY');
+            let lessonPlanArray = Object.entries(lesson.lessonPlanData);
+            let length = lessonPlanArray.length;
+            let lessonReflectionArray= Object.entries(lesson.teacherReflection)
+
             let pdfName = lesson.name;
-            var doc = new jsPDF();
-            doc.text(lesson.name, 20, 50);
+            var doc = new jsPDF('p' ,'in');
+            doc.text(lesson.name, 1, .5);
+            doc.setFontSize(10);
+            doc.text(`Lesson Taught On: ${formatedDate}`, 1, 1);
+            for (var i = 0; i < lessonPlanArray.length; i++) {
+              doc.text(`${lessonPlanArray[i][0]}`, 1, (1.4 + i/2))
+              doc.text(`${lessonPlanArray[i][1]}`, 1, (1.6 + i/2))
+            }
+            for (var i = 0; i < lessonReflectionArray.length; i++) {
+              doc.text(`${lessonReflectionArray[i][0]}`, 1, ((length +.4) + i/2))
+              doc.text(`${lessonReflectionArray[i][1]}`, 1, ((length +.6) + i/2))
+            }
             doc.save(pdfName + '.pdf');
           }
         });
@@ -127,6 +145,13 @@ export default {
     this.getLessonPlans();
     this.getGoals();
     this.getComponents();
+  },
+  filters:{
+    formatDate: function (value) {
+      if (value) {
+      return moment(String(value)).format('MM/DD/YYYY')
+      }
+    }
   }
 };
 </script>
