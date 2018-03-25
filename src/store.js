@@ -54,6 +54,12 @@ const state = {
     name: '',
   },
   standards: [],
+  standardsData: {
+    strand: '',
+    substrand: '',
+    standard: '',
+    selectedStandards: [],
+  },
 };
 
 const mutations = {
@@ -297,12 +303,12 @@ const actions = {
     finalTemplate.push("</form>");
 
     const templateString = finalTemplate.join("");
-    const standardsString = `{state.standardsSelected.standardsSet}-{state.standardsSelected.gradeLevel}`;
+    const standardsObject = state.standardsSelected;
     const nameString = state.names.templateName;
 
     const templateObject = {
       name: nameString,
-      standards: standardsString,
+      standards: standardsObject,
       lessonTemplateString: templateString,
       users_id: 1
     };
@@ -409,8 +415,107 @@ const actions = {
       .then(res => res.json())
       .then(res => commit("updateLessonComponents", res));
   },
-  getStandards: ({ commit, state }) => {
-    fetch("http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-04", {
+  getStandards: ({ commit, state }, standardsInfo) => {
+    console.log(standardsInfo)
+    let APIurl;
+
+    if(standardsInfo.standardsSet === "CommonCoreMath"){
+      switch (standardsInfo.gradeLevel) {
+        case "1":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-01"
+            break;
+        case "2":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-02"
+            break;
+        case "3":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-03"
+            break;
+        case "4":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-04"
+            break;
+        case "5":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-05"
+            break;
+        case "6":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-06"
+            break;
+        case "7":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-07"
+            break;
+        case "8":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-08"
+            break;
+        case "9-10-11-12":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grades-09-10-11-12"
+            break;
+        default:
+      }
+    } else if(standardsInfo.standardsSet === "CommonCoreEnglish"){
+      switch (standardsInfo.gradeLevel) {
+        case "1":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-01"
+            break;
+        case "2":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-02"
+            break;
+        case "3":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-03"
+            break;
+        case "4":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-04"
+            break;
+        case "5":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-05"
+            break;
+        case "6":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-06"
+            break;
+        case "7":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-07"
+            break;
+        case "8":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-08"
+            break;
+        case "9-10-11-12":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grades-09-10-11-12"
+            break;
+        default:
+      }
+    } else if(standardsInfo.standardsSet === "NextGenerationScience"){
+      switch (standardsInfo.gradeLevel) {
+        case "1":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-01"
+            break;
+        case "2":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-02"
+            break;
+        case "3":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-03"
+            break;
+        case "4":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-04"
+            break;
+        case "5":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-05"
+            break;
+        case "6":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08"
+            break;
+        case "7":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08"
+            break;
+        case "8":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08"
+            break;
+        case "9-10-11-12":
+            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-09-10-11-12"
+            break;
+        default:
+      }
+    }
+    console.log(APIurl);
+
+    fetch(APIurl, {
       method: "GET",
       headers:{ 'API-KEY': 'GGbhskDed9DkGM9u3pZgR7TU' },
     })
@@ -452,6 +557,7 @@ const getters = {
   lessonHistory: state => state.lessonHistory,
   lessonReflection: state => state.lessonReflection,
   saveLessonReflectionConfirm: state => state.saveLessonReflectionConfirm,
+  standardsData: state => state.standardsData,
 };
 
 // A Vuex instance is created by combining the state, mutations, actions,

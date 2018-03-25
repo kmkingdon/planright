@@ -23,7 +23,14 @@
       <div v-for="lesson in lessonPlans" v-if="lesson.id == lessonHistory.selectedLesson" id="lesson-display-inner">
         <h1>{{lesson.name}}</h1>
         <h2>Date Taught:{{lesson.dateTaught | formatDate}}</h2>
-        <ul>
+        <ul id="standards-view">
+          <h2>Standards</h2>
+          <li v-for="(value, key) in lesson.standards">
+            <h3>{{value}}</h3>
+            <h4>{{key}}</h4>
+          </li>
+        </ul>
+        <ul id="components-view">
           <li v-for="(value, key) in lesson.lessonPlanData">
             <h3>{{key}}</h3>
             <h4>{{value}}</h4>
@@ -118,22 +125,28 @@ export default {
         if(lesson.id == this.lessonHistory.selectedLesson) {
             let date = lesson.dateTaught;
             let formatedDate= moment(String(date)).format('MM/DD/YYYY');
+            let standardsArray= Object.entries(lesson.standards);
             let lessonPlanArray = Object.entries(lesson.lessonPlanData);
-            let length = lessonPlanArray.length;
+            let standardsLength = standardsArray.length;
+            let lessonLength = lessonPlanArray.length + standardsArray.length;
             let lessonReflectionArray= Object.entries(lesson.teacherReflection)
 
             let pdfName = lesson.name;
             var doc = new jsPDF('p' ,'in');
-            doc.text(lesson.name, 1, .5);
+            doc.text(lesson.name, .3, .5);
             doc.setFontSize(10);
-            doc.text(`Lesson Taught On: ${formatedDate}`, 1, 1);
+            doc.text(`Lesson Taught On: ${formatedDate}`, .3, 1);
+            doc.text("Standards:", .3, 1.4);
+            for (var i = 0; i < standardsArray.length; i++) {
+              doc.text(`${standardsArray[i][0]} : ${standardsArray[i][1]}`, .3, (1.6 + i/3))
+            }
             for (var i = 0; i < lessonPlanArray.length; i++) {
-              doc.text(`${lessonPlanArray[i][0]}`, 1, (1.4 + i/2))
-              doc.text(`${lessonPlanArray[i][1]}`, 1, (1.6 + i/2))
+              doc.text(`${lessonPlanArray[i][0]}`, .3, ((standardsLength + 1.4) + i/2))
+              doc.text(`${lessonPlanArray[i][1]}`, .3, ((standardsLength + 1.6)+ i/2))
             }
             for (var i = 0; i < lessonReflectionArray.length; i++) {
-              doc.text(`${lessonReflectionArray[i][0]}`, 1, ((length +.4) + i/2))
-              doc.text(`${lessonReflectionArray[i][1]}`, 1, ((length +.6) + i/2))
+              doc.text(`${lessonReflectionArray[i][0]}`, .3, ((lessonLength +.4) + i/2))
+              doc.text(`${lessonReflectionArray[i][1]}`, .3, ((lessonLength +.6) + i/2))
             }
             doc.save(pdfName + '.pdf');
           }
@@ -256,26 +269,70 @@ export default {
   height: 4vh;
   text-align: center;
   font-size: 1rem;
+  padding-top: .5rem;
   border: solid #AFADB3 1px;
 }
 
-#lesson-display-inner ul {
+#standards-view {
+  width: 100%;
+  border: solid #AFADB3 1px;
+}
+
+#standards-view h2{
+  width: 100%;
+  height: 2vh;
+  font-size: 1rem;
+  border: none;
+}
+
+#standards-view ul {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#standards-view li{
+  width: 90%;
+  margin-left: 2rem;
+  list-style: circle;
+  border: none;
+}
+
+#standards-view h3{
+  width: 100%;
+  font-size: .8rem;
+  margin: .4rem 0rem;
+}
+
+#standards-view h4{
+  width: 100%;
+  font-size: .6rem;
+  margin-bottom: .5rem;
+}
+
+#components-view {
   width: 100%;
 }
 
-#lesson-display-inner li {
+#components-view ul {
+  width: 100%;
+}
+
+#components-view li {
   width: 100%;
   height: 10vh;
   border: solid #AFADB3 1px;
 }
 
-#lesson-display-inner h3 {
+#components-view h3 {
   font-size: 1rem;
   padding: .4rem 0rem 0rem 4rem;
   background-color: #AFADB3;
 }
 
-#lesson-display-inner h4 {
+#components-view h4 {
   font-size: 1rem;
   text-align: center;
   padding: .3rem .5rem;

@@ -18,7 +18,9 @@
             <option value="3">Third Grade</option>
             <option value="4">Fourth Grade</option>
             <option value="5">Fifth Grade</option>
-            <option value="6-7-8">Middle School (6, 7, 8)</option>
+            <option value="6">Sixth Grade</option>
+            <option value="7">Seventh Grade</option>
+            <option value="8">Eighth Grade</option>
             <option value="9-10-11-12">High School</option>
           </select>
         </form>
