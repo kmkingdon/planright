@@ -77,7 +77,10 @@
       </select>
       <button v-on:click="addReflection">Add Reflection</button>
       <p id="warning" v-if="lessonHistory.warning">Please select a lesson and goal first.</p>
+      <h2 v-if="lessonHistory.selectedLesson !== 0">Delete This Lesson Plan</h2>
+      <button v-if="lessonHistory.selectedLesson !== 0" v-on:click="deleteLessonModal.show = true">Delete Lesson</button>
     </div>
+    <ModalDeleteLesson v-if="deleteLessonModal.show"  @close="deleteLessonModal.show = false" />
   </div>
 </template>
 
@@ -85,6 +88,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import Header from '@/components/Header';
 import Menu from '@/components/Menu';
+import ModalDeleteLesson from '@/components/ModalDeleteLesson';
 import jsPDF  from "jspdf";
 import moment from 'moment';
 
@@ -92,7 +96,8 @@ export default {
   name: 'PlanHistory',
   components: {
     Header,
-    Menu
+    Menu,
+    ModalDeleteLesson,
   },
   data() {
     return {
@@ -106,6 +111,7 @@ export default {
     'lessonHistory',
     'lessonReflection',
     'saveLessonReflectionConfirm',
+    'deleteLessonModal',
   ]),
   methods:{
     ...mapActions([
@@ -349,7 +355,7 @@ export default {
 }
 
 #lesson-menu h2 {
-  margin: 2rem .5rem 1rem .5rem;
+  margin: 2rem .5rem .5rem .5rem;
   font-size: 1.4rem;
   text-align: center;
 }
@@ -367,18 +373,19 @@ export default {
 }
 
 #lesson-menu button {
-  width: 70%;
-  height: 3rem;
+  width: 60%;
+  height: 2rem;
   color: white;
   font-size: 1.2rem;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
   background-color: #D09400;
   border: solid #120832 1px;
   border-radius: 10px;
 }
 
 #warning {
-  font-size: 1.2rem;
+  width: 80%;
+  font-size: 1rem;
   color: white;
   text-align: center;
   padding: .5rem;

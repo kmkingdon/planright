@@ -1,40 +1,74 @@
 import Vue from "vue";
 import Vuex from "vuex";
-var algoliasearch = require("algoliasearch");
 Vue.use(Vuex);
 
 const state = {
+  //  Authorization and Account Management
   authorized: true,
+  userId: 1,
   settingsView: false,
-  arrangeConfirm: false,
-  saveTemplateConfirm: false,
-  saveLessonConfirm: false,
-  saveGoalConfirm: false,
-  saveFinalReflectionConfirm: false,
-  saveLessonReflectionConfirm: false,
-  updateLessonConfirm: false,
-  templateStep: 1,
-  standardsSelected: {
-    standardsSet: "",
-    gradeLevel: ""
-  },
+  //  Application data
+  goals: [],
+  folders: [],
   lessonComponents: [],
   lessonTemplates: [],
   lessonPlans: [],
-  folders: [],
-  selectedComponentsList: [],
+  names: {
+    templateName: '',
+    lessonName: '',
+    folderName: '',
+  },
+  standards: [],
+  //  Confirmation Message Controllers
+  arrangeConfirm: false,
+  saveFinalReflectionConfirm: false,
+  saveGoalConfirm: false,
+  saveLessonConfirm: false,
+  saveLessonReflectionConfirm: false,
+  saveTemplateConfirm: false,
+  updateLessonConfirm: false,
+  //  Lesson Template
   addModal: {
     show: false,
     name: '',
   },
   arrangeComponentArray: [],
-  names: {
-    templateName: "",
-    lessonName: "",
-    folderName: ""
+  selectedComponentsList: [],
+  standardsSelected: {
+    standardsSet: '',
+    gradeLevel: '',
+  },
+  templateStep: 1,
+  //  Lesson Planning
+  deleteTemplateModal: {
+    show: false,
+  },
+  oldLessonData: {
+    lessonId: 0,
+    name: '',
+    dateTaught: '2000,01,01',
+    standards: {},
+    standardsObject: {},
+    lessonTemplateString: '',
+    lessonPlanData: {},
+    fileName: '',
+  },
+  standardsData: {
+    strand: '',
+    substrand: '',
+    standard: '',
+    selectedStandards: [],
+  },
+  templateData: {
+    templateId: 0,
+    selectedFolder: '',
+  },
+  //  Lesson History
+  deleteLessonModal: {
+    show: false,
   },
   lessonHistory: {
-    selectedFolder:'',
+    selectedFolder: '',
     selectedLesson: 0,
     reflectionAdded: false,
     reflectionGoal: 0,
@@ -45,35 +79,23 @@ const state = {
     progress: '',
     improve: '',
   },
-  goals: [],
+  //  Goals
+  deleteGoalModal: {
+    show: false,
+  },
   goalData: {
-    id: NaN,
+    id: -1,
     component: 0,
     strengths: '',
     improve: '',
     actions: '',
     name: '',
   },
-  standards: [],
-  standardsData: {
-    strand: '',
-    substrand: '',
-    standard: '',
-    selectedStandards: [],
-  },
-  oldLessonData:{
-    lessonId: 0,
-    name: "",
-    dateTaught: "2000,01,01",
-    standards: {},
-    standardsObject: {},
-    lessonTemplateString: '',
-    lessonPlanData: {},
-    fileName: "",
-  },
+
 };
 
 const mutations = {
+  //  Authorization and Account Managment
   openSettings(state) {
     if (state.settingsView === false) {
       state.settingsView = true;
@@ -81,93 +103,10 @@ const mutations = {
       state.settingsView = false;
     }
   },
-  changeTemplateStepNext(state) {
-    state.templateStep++;
-  },
-  changeTemplateStepBack(state) {
-    state.templateStep--;
-  },
-  selectGoal(state) {
-    state.goalData.id = 0;
-  },
-  saveComponents(state, res) {
-    state.lessonComponents = res.components;
-  },
-  updateLessonComponents(state, res) {
-    state.lessonComponents.push(res.components);
-    state.addModal = {
-      show: false,
-      name: '',
-    };
-  },
-  saveLessonTemplates(state, res) {
-    state.lessonTemplates = res.templates;
-  },
-  updateLessonTemplates(state, res) {
-    state.saveTemplateConfirm = true;
-    state.lessonTemplates.push(res.templates);
-  },
-  saveLessonPlans(state, res) {
-    state.lessonPlans = res.plans;
-  },
-  selectLesson(state, event) {
-    state.lessonHistory.selectedLesson = event.target.id;
-  },
-  addReflection(state) {
-    if(state.lessonHistory.selectedLesson !== 0 && state.lessonHistory.reflectionGoal !== 0 ) {
-      state.lessonHistory.warning = false;
-      if(state.lessonHistory.reflectionAdded === true) {
-        state.lessonHistory.reflectionAdded = false;
-      } else {
-        state.lessonHistory.reflectionAdded = true;
-      }
-    } else {
-      state.lessonHistory.warning = true;
-    }
-  },
-  updateLessonPlans(state, res) {
-    state.saveLessonConfirm = true;
-    state.lessonPlans.push(res.plans);
-    setTimeout(function() {
-      state.saveLessonConfirm = false;
-    }, 5000);
-  },
-  getFolders(state) {
-    setTimeout(() => {
-      state.lessonPlans.forEach(lesson => {
-        if(state.folders.includes(lesson.fileName) === false){
-          state.folders.push(lesson.fileName);
-        }
-      })
-    }, 3000);
-  },
-  resetTemplateVariables(state) {
-    state.saveTemplateConfirm = false;
-    state.names.templateName = "";
-    state.arrangeComponentArray = [];
-    state.templateStep = 1;
-    state.standardsSelected = { standardsSet: "", gradeLevel: "" };
-  },
-  saveSelectedComponents(state, event) {
-    if (
-      state.selectedComponentsList.filter(item => event.target.id == item.id)
-        .length === 0
-    ) {
-      state.selectedComponentsList.push({
-        id: parseInt(event.target.id),
-        htmlType: event.target.value
-      });
-    } else {
-      state.selectedComponentsList.forEach(item => {
-        if (item.id === event.id) {
-          item.htmlType = event.target.value;
-        }
-      });
-    }
-  },
+  //  Lesson Template
   arrangeComponentList(state) {
     const filterById = (array, id) => array.filter(item => item.id === id);
-    const list = state.selectedComponentsList.map(component => {
+    const list = state.selectedComponentsList.map((component) => {
       return Object.assign(
         {},
         component,
@@ -175,6 +114,25 @@ const mutations = {
       );
     });
     state.arrangeComponentArray = list;
+  },
+  changeTemplateStepNext(state) {
+    state.templateStep++;
+  },
+  changeTemplateStepBack(state) {
+    state.templateStep--;
+  },
+  resetTemplateVariables(state) {
+    state.saveTemplateConfirm = false;
+    state.names.templateName = '';
+    state.arrangeComponentArray = [];
+    state.templateStep = 1;
+    state.standardsSelected = { standardsSet: '', gradeLevel: '' };
+  },
+  saveComponents(state, res) {
+    state.lessonComponents = res.components;
+  },
+  saveLessonTemplates(state, res) {
+    state.lessonTemplates = res.templates;
   },
   saveOrder(state, { oldIndex, newIndex }) {
     const categories = state.arrangeComponentArray.slice();
@@ -186,73 +144,99 @@ const mutations = {
       component.order = i;
     });
     state.arrangeConfirm = true;
-    setTimeout(function() {
+    setTimeout(() => {
       state.arrangeConfirm = false;
     }, 5000);
   },
+  saveSelectedComponents(state, event) {
+    if (
+      state.selectedComponentsList.filter(item => event.target.id == item.id)
+        .length === 0
+    ) {
+      state.selectedComponentsList.push({
+        id: parseInt(event.target.id),
+        htmlType: event.target.value
+      });
+    } else {
+      state.selectedComponentsList.forEach((item) => {
+        if (item.id === event.id) {
+          item.htmlType = event.target.value;
+        }
+      });
+    }
+  },
+  updateLessonComponents(state, res) {
+    state.lessonComponents.push(res.components);
+    state.addModal = {
+      show: false,
+      name: '',
+    };
+  },
+  updateLessonTemplates(state, res) {
+    state.saveTemplateConfirm = true;
+    state.lessonTemplates.push(res.templates);
+  },
+  //  Lesson Planning
   addFolder(state) {
-    state.folders.forEach(folder => {
+    state.folders.forEach((folder) => {
       if (state.names.folderName !== folder) {
         state.folders.push(state.names.folderName);
-        state.names.folderName = "";
+        state.names.folderName = '';
       }
     });
   },
-  saveGoals(state, res) {
-    state.goals = res.goals;
+  addStandard(state) {
+    let id = state.standardsData.standard;
+    state.standards.forEach((standard) => {
+      if (standard.id == id) {
+        state.standardsData.selectedStandards.push(standard);
+      }
+    });
+  },
+  clearOldStandards(state) {
+    state.oldLessonData.standardsObject = {};
+  },
+  deleteStandard(state, event) {
+    let index;
+    state.standardsData.selectedStandards.forEach((standard, i) => {
+      if (standard.id == event.target.id) {
+        index = i;
+      }
+    });
+    state.standardsData.selectedStandards.splice(index, 1);
+  },
+  getFolders(state) {
+    setTimeout(() => {
+      state.lessonPlans.forEach((lesson) => {
+        if (state.folders.includes(lesson.fileName) === false) {
+          state.folders.push(lesson.fileName);
+        }
+      })
+    }, 3000);
+  },
+  saveLessonPlans(state, res) {
+    state.lessonPlans = res.plans;
   },
   saveStandards(state, res) {
-    const standardsArray = Object.values(res.data.standards)
+    const standardsArray = Object.values(res.data.standards);
     state.standards = standardsArray;
   },
-  selectGoalComponent(state, event) {
-    state.goalData.component = event.target.id;
-  },
-  updateGoals(state, res) {
-    state.saveGoalConfirm = true;
-    state.goals.push(res.goals);
-    state.goalData = {
-      component: 0,
-      strengths: '',
-      improve: '',
-      actions: '',
-      name: '',
-      reflection: '',
-    };
-    setTimeout(function() {
-      state.saveGoalConfirm = false;
-    }, 5000);
-  },
-  updateGoalReflections(state, res) {
-    state.saveFinalReflectionConfirm = true;
+  updateDeleteTemplate(state) {
     let index;
-    state.goals.forEach((goal, i) => {
-      if(goal.id === res.goals.id) {
+    state.lessonTemplates.forEach((template, i) => {
+      if (template.id === state.templateData.templateId) {
         index = i;
       }
-    })
-    state.goals.splice(index , 1, res.goals);
-    setTimeout(function() {
-      state.saveFinalReflectionConfirm = false;
-    }, 5000);
+    });
+    state.lessonTemplates.splice(index, 1);
+    state.deleteTemplateModal = false;
+    state.templateData.templateId = 0;
   },
-  updateLessonReflections(state, res) {
-    state.saveLessonReflectionConfirm = true;
-    let index;
-    state.lessonPlans.forEach((plan, i) => {
-      if(plan.id === res.plans.id) {
-        index = i;
-      }
-    })
-    state.lessonPlans.splice(index , 1, res.plans);
-    state.lessonHistory.reflectionAdded = false;
-    state.lessonReflection = {
-      actions: '',
-      progress: '',
-      improve: '',
-    };
-    setTimeout(function() {
-      state.saveLessonReflectionConfirm = false;
+  updateLessonPlans(state, res) {
+    state.saveLessonConfirm = true;
+    state.lessonPlans.push(res.plans);
+    setTimeout(() => {
+      state.saveLessonConfirm = false;
     }, 5000);
   },
   updateOldLessonData(state) {
@@ -267,71 +251,172 @@ const mutations = {
     state.oldLessonData.lessonPlanData = lesson.lessonPlanData;
     state.oldLessonData.fileName = lesson.fileName;
   },
-  clearOldStandards(state) {
-    state.oldLessonData.standardsObject = {};
+  //  Lesson history
+  addReflection(state) {
+    if (state.lessonHistory.selectedLesson !== 0 && state.lessonHistory.reflectionGoal !== 0) {
+      state.lessonHistory.warning = false;
+      if (state.lessonHistory.reflectionAdded === true) {
+        state.lessonHistory.reflectionAdded = false;
+      } else {
+        state.lessonHistory.reflectionAdded = true;
+      }
+    } else {
+      state.lessonHistory.warning = true;
+    }
   },
-  updateLessonPlans(state, res) {
+  selectLesson(state, event) {
+    state.lessonHistory.selectedLesson = event.target.id;
+  },
+  updateDeleteLesson(state) {
+    let index;
+    state.lessonPlans.forEach((plan, i) => {
+      if (plan.id === state.lessonHistory.selectedLesson) {
+        index = i;
+      }
+    });
+    state.lessonPlans.splice(index, 1);
+    state.deleteLessonModal = false;
+    state.lessonHistory.selectedLesson = 0;
+  },
+  updateLessonPlansEdit(state, res) {
     state.updateLessonConfirm = true;
     let index;
     state.lessonPlans.forEach((lesson, i) => {
-      if(lesson.id === res.lessons.id) {
+      if (lesson.id === res.lessons.id) {
         index = i;
       }
-    })
-    state.lessonPlans.splice(index , 1, res.lessons);
-    setTimeout(function() {
+    });
+    state.lessonPlans.splice(index, 1, res.lessons);
+    setTimeout(() => {
       state.updateLessonConfirm = false;
     }, 5000);
-  }
+  },
+  updateLessonReflections(state, res) {
+    state.saveLessonReflectionConfirm = true;
+    let index;
+    state.lessonPlans.forEach((plan, i) => {
+      if (plan.id === res.plans.id) {
+        index = i;
+      }
+    });
+    state.lessonPlans.splice(index, 1, res.plans);
+    state.lessonHistory.reflectionAdded = false;
+    state.lessonReflection = {
+      actions: '',
+      progress: '',
+      improve: '',
+    };
+    setTimeout(() => {
+      state.saveLessonReflectionConfirm = false;
+    }, 5000);
+  },
+  //  Goals
+  saveGoals(state, res) {
+    state.goals = res.goals;
+  },
+  selectGoal(state) {
+    state.goalData.id = 0;
+  },
+  selectGoalComponent(state, event) {
+    state.goalData.component = event.target.id;
+  },
+  updateDeleteGoal(state) {
+    let index;
+    state.goals.forEach((goal, i) => {
+      if (goal.id === state.goalData.id) {
+        index = i;
+      }
+    });
+    state.goals.splice(index, 1);
+    state.deleteGoalModal = false;
+    state.goalData.id = -1;
+  },
+  updateGoals(state, res) {
+    state.saveGoalConfirm = true;
+    state.goals.push(res.goals);
+    state.goalData = {
+      component: 0,
+      strengths: '',
+      improve: '',
+      actions: '',
+      name: '',
+      reflection: '',
+    };
+    setTimeout(() => {
+      state.saveGoalConfirm = false;
+    }, 5000);
+  },
+  updateGoalReflections(state, res) {
+    state.saveFinalReflectionConfirm = true;
+    let index;
+    state.goals.forEach((goal, i) => {
+      if (goal.id === res.goals.id) {
+        index = i;
+      }
+    });
+    state.goals.splice(index, 1, res.goals);
+    setTimeout(() => {
+      state.saveFinalReflectionConfirm = false;
+    }, 5000);
+  },
 };
 
 const actions = {
-  openSettings: ({ commit }) => commit("openSettings"),
-  changeTemplateStepNext: ({ commit }) => commit("changeTemplateStepNext"),
-  changeTemplateStepBack: ({ commit }) => commit("changeTemplateStepBack"),
-  resetTemplateVariables: ({ commit }) => commit("resetTemplateVariables"),
-  updateOldLessonData: ({ commit }) => commit("updateOldLessonData"),
-  selectGoal: ({ commit }) => commit("selectGoal"),
-  addFolder: ({ commit }) => commit("addFolder"),
-  addReflection: ({ commit }) => commit("addReflection"),
-  restartTemplate: ({ commit }) => commit("resetTemplateVariables"),
-  clearOldStandards: ({ commit }) => commit("clearOldStandards"),
-  getComponents({ commit }) {
-    fetch("https://planrightdb.herokuapp.com/components")
+  //  Authorization and Account Management
+  openSettings: ({ commit }) => commit('openSettings'),
+  //  Lesson Template
+  addLessonComponent: ({ commit, state }) => {
+    const lessonComponentObject = {
+      name: state.addModal.name,
+      order: 0,
+      fixed: false,
+      users_id: 1,
+    }
+    fetch('https://planrightdb.herokuapp.com/components', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(lessonComponentObject),
+    })
       .then(res => res.json())
-      .then(res => commit("saveComponents", res));
+      .then(res => commit('updateLessonComponents', res));
   },
-  saveSelectedComponents: ({ commit }, event) => {
-    commit("saveSelectedComponents", event);
+  arrangeComponentList: ({ commit }) => commit('arrangeComponentList'),
+  changeTemplateStepNext: ({ commit }) => commit('changeTemplateStepNext'),
+  changeTemplateStepBack: ({ commit }) => commit('changeTemplateStepBack'),
+  getComponents({ commit }) {
+    fetch('https://planrightdb.herokuapp.com/components')
+      .then(res => res.json())
+      .then(res => commit('saveComponents', res));
   },
-  arrangeComponentList: ({ commit }) => commit("arrangeComponentList"),
+  resetTemplateVariables: ({ commit }) => commit('resetTemplateVariables'),
+  restartTemplate: ({ commit }) => commit('resetTemplateVariables'),
   saveOrder: ({ commit }, { oldIndex, newIndex }) => {
-    commit("saveOrder", { oldIndex, newIndex });
+    commit('saveOrder', { oldIndex, newIndex });
   },
-  saveOrderFinal: ({ commit }) => commit("saveOrderFinal"),
+  saveOrderFinal: ({ commit }) => commit('saveOrderFinal'),
   saveTemplate({ commit, state }) {
-    let finalTemplate = ["<form>"];
-    state.arrangeComponentArray.forEach(item => {
+    const finalTemplate = ['<form>'];
+    state.arrangeComponentArray.forEach((item) => {
       switch (item.htmlType) {
-        case "text":
+        case 'text':
           finalTemplate.push(
             `<label>${item.name}</label><input type='text' id='${item.name}'/>`
           );
           break;
-        case "const":
+        case 'const':
           finalTemplate.push(
             `<label>${item.name}</label><input type='text' id='${
               item.name
             }' value='${item.customization}'/>`
           );
           break;
-        case "select":
-          const optionsArray = item.customization.split(",");
+        case 'select':
+          const optionsArray = item.customization.split(',');
           const optionsHTMLArray = [];
-          optionsArray.forEach(item => {
+          optionsArray.forEach((item) => {
             optionsHTMLArray.push(`<option value='${item}'>${item}</option>`);
           });
-          let optionsHTML = optionsHTMLArray.join("");
+          let optionsHTML = optionsHTMLArray.join('');
           finalTemplate.push(
             `<label>${item.name}</label><select id='${
               item.name
@@ -341,9 +426,9 @@ const actions = {
         default:
       }
     });
-    finalTemplate.push("</form>");
+    finalTemplate.push('</form>');
 
-    const templateString = finalTemplate.join("");
+    const templateString = finalTemplate.join('');
     const standardsObject = state.standardsSelected;
     const nameString = state.names.templateName;
 
@@ -351,232 +436,251 @@ const actions = {
       name: nameString,
       standards: standardsObject,
       lessonTemplateString: templateString,
-      users_id: 1
+      users_id: 1,
     };
 
-    fetch("https://planrightdb.herokuapp.com/lessontemplates", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(templateObject)
+    fetch('https://planrightdb.herokuapp.com/lessontemplates', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(templateObject),
     })
       .then(res => res.json())
-      .then(res => commit("updateLessonTemplates", res));
+      .then(res => commit('updateLessonTemplates', res));
+  },
+  saveSelectedComponents: ({ commit }, event) => {
+    commit('saveSelectedComponents', event);
+  },
+  //  Lesson Planning
+  addFolder: ({ commit }) => commit('addFolder'),
+  addStandard: ({ commit }) => commit('addStandard'),
+  clearOldStandards: ({ commit }) => commit('clearOldStandards'),
+  deleteStandard: ({ commit }, event) => {
+    commit('deleteStandard', event);
+  },
+  deleteTemplate({ commit, state }) {
+    const deleteAPI = `https://planrightdb.herokuapp.com/lessontemplates/${state.templateData.templateId}`;
+    fetch(deleteAPI, {
+      method: 'DELETE',
+    })
+      .then(commit('updateDeleteTemplate'));
   },
   getLessonTemplates({ commit }) {
-    fetch("https://planrightdb.herokuapp.com/lessontemplates")
+    fetch('https://planrightdb.herokuapp.com/lessontemplates')
       .then(res => res.json())
-      .then(res => commit("saveLessonTemplates", res));
-  },
-  getLessonPlans({ commit }) {
-    fetch("https://planrightdb.herokuapp.com/lessonplans")
-      .then(res => res.json())
-      .then(res => commit("saveLessonPlans", res))
-      .then(commit("getFolders"));
-  },
-  saveLessonPlan: ({ commit }, plan) => {
-    fetch("https://planrightdb.herokuapp.com/lessonplans", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(plan)
-    })
-      .then(res => res.json())
-      .then(res => commit("updateLessonPlans", res));
-  },
-  selectLesson: ({ commit }, event) => {
-    commit("selectLesson", event);
-  },
-  getGoals({ commit }) {
-    fetch("https://planrightdb.herokuapp.com/goals")
-      .then(res => res.json())
-      .then(res => commit("saveGoals", res))
-  },
-  selectGoalComponent: ({ commit }, event) => {
-    commit("selectGoalComponent", event);
-  },
-  postGoal: ({ commit, state }) => {
-    const goalObject = {
-        componentId: state.goalData.component,
-        name: state.goalData.name,
-        goalData: {Strengths:state.goalData.strengths, Improvements:state.goalData.improve, Actions:state.goalData.actions},
-        goalFinalReflection: '',
-        coachCommentString: '',
-        users_id: 1
-    }
-    fetch("https://planrightdb.herokuapp.com/goals", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(goalObject)
-    })
-      .then(res => res.json())
-      .then(res => commit("updateGoals", res));
-  },
-  saveFinalReflection: ({ commit, state }) => {
-    const goalObject = {
-        goalFinalReflection: state.goalData.reflection,
-    }
-    const putAPI = `https://planrightdb.herokuapp.com/goals/${state.goalData.id}`;
-
-    fetch(putAPI, {
-      method: "PUT",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(goalObject)
-    })
-      .then(res => res.json())
-      .then(res => commit('updateGoalReflections', res));
-  },
-  addLessonReflection: ({ commit, state }) => {
-    const reflectionObject = {
-        teacherReflection: {
-          actions: state.lessonReflection.actions,
-          progress: state.lessonReflection.progress,
-          improve: state.lessonReflection.improve,
-        }
-    };
-    const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.lessonHistory.selectedLesson}`;
-    fetch(putAPI, {
-      method: "PUT",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(reflectionObject)
-    })
-      .then(res => res.json())
-      .then(res => commit('updateLessonReflections', res));
-  },
-  addLessonComponent: ({ commit, state }) => {
-    const lessonComponentObject = {
-        name: state.addModal.name,
-        order: 0,
-        fixed: false,
-        users_id: 1,
-    }
-    fetch("https://planrightdb.herokuapp.com/components", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(lessonComponentObject)
-    })
-      .then(res => res.json())
-      .then(res => commit("updateLessonComponents", res));
+      .then(res => commit('saveLessonTemplates', res));
   },
   getStandards: ({ commit, state }, standardsInfo) => {
     let APIurl;
 
-    if(standardsInfo.standardsSet === "CommonCoreMath"){
+    if(standardsInfo.standardsSet === 'CommonCoreMath') {
       switch (standardsInfo.gradeLevel) {
-        case "1":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-01"
-            break;
-        case "2":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-02"
-            break;
-        case "3":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-03"
-            break;
-        case "4":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-04"
-            break;
-        case "5":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-05"
-            break;
-        case "6":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-06"
-            break;
-        case "7":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-07"
-            break;
-        case "8":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-08"
-            break;
-        case "9-10-11-12":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grades-09-10-11-12"
-            break;
+        case '1':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-01'
+          break;
+        case '2':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-02'
+          break;
+        case '3':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-03'
+          break;
+        case '4':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-04'
+          break;
+        case '5':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-05'
+          break;
+        case '6':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-06'
+          break;
+        case '7':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-07'
+          break;
+        case '8':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-08'
+          break;
+        case '9-10-11-12':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grades-09-10-11-12'
+          break;
         default:
       }
-    } else if(standardsInfo.standardsSet === "CommonCoreEnglish"){
+    } else if(standardsInfo.standardsSet === 'CommonCoreEnglish') {
       switch (standardsInfo.gradeLevel) {
-        case "1":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-01"
-            break;
-        case "2":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-02"
-            break;
-        case "3":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-03"
-            break;
-        case "4":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-04"
-            break;
-        case "5":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-05"
-            break;
-        case "6":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-06"
-            break;
-        case "7":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-07"
-            break;
-        case "8":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-08"
-            break;
-        case "9-10-11-12":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grades-09-10-11-12"
-            break;
+        case '1':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-01'
+          break;
+        case '2':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-02'
+          break;
+        case '3':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-03'
+          break;
+        case '4':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-04'
+          break;
+        case '5':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-05'
+          break;
+        case '6':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-06'
+          break;
+        case '7':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-07'
+          break;
+        case '8':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-08'
+          break;
+        case '9-10-11-12':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grades-09-10-11-12'
+          break;
         default:
       }
-    } else if(standardsInfo.standardsSet === "NextGenerationScience"){
+    } else if(standardsInfo.standardsSet === 'NextGenerationScience') {
       switch (standardsInfo.gradeLevel) {
-        case "1":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-01"
-            break;
-        case "2":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-02"
-            break;
-        case "3":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-03"
-            break;
-        case "4":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-04"
-            break;
-        case "5":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-05"
-            break;
-        case "6":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08"
-            break;
-        case "7":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08"
-            break;
-        case "8":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08"
-            break;
-        case "9-10-11-12":
-            APIurl = "http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-09-10-11-12"
-            break;
+        case '1':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-01'
+          break;
+        case '2':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-02'
+          break;
+        case '3':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-03'
+          break;
+        case '4':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-04'
+          break;
+        case '5':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-05'
+          break;
+        case '6':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08'
+          break;
+        case '7':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08'
+          break;
+        case '8':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08'
+          break;
+        case '9-10-11-12':
+          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-09-10-11-12'
+          break;
         default:
       }
     }
-    console.log(APIurl);
 
     fetch(APIurl, {
-      method: "GET",
-      headers:{ 'API-KEY': 'GGbhskDed9DkGM9u3pZgR7TU' },
+      method: 'GET',
+      headers: { 'API-KEY': 'GGbhskDed9DkGM9u3pZgR7TU' },
     })
       .then(res => res.json())
-      .then(res => commit("saveStandards", res));
+      .then(res => commit('saveStandards', res));
   },
-  updateLessonPlan: ({ commit, state }, lessonPlan) => {
-
-    const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.oldLessonData.lessonId}`;
-
-    fetch(putAPI, {
-      method: "PUT",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(lessonPlan)
+  saveLessonPlan: ({ commit }, plan) => {
+    fetch('https://planrightdb.herokuapp.com/lessonplans', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(plan),
     })
       .then(res => res.json())
       .then(res => commit('updateLessonPlans', res));
-  }
+  },
+  selectLesson: ({ commit }, event) => {
+    commit('selectLesson', event);
+  },
+  updateLessonPlan: ({ commit, state }, lessonPlan) => {
+    const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.oldLessonData.lessonId}`;
+
+    fetch(putAPI, {
+      method: 'PUT',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(lessonPlan),
+    })
+      .then(res => res.json())
+      .then(res => commit('updateLessonPlansEdit', res));
+  },
+  updateOldLessonData: ({ commit }) => commit('updateOldLessonData'),
+  //  Lesson History
+  addLessonReflection: ({ commit, state }) => {
+    const reflectionObject = {
+      teacherReflection: {
+        actions: state.lessonReflection.actions,
+        progress: state.lessonReflection.progress,
+        improve: state.lessonReflection.improve,
+      }
+    };
+    const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.lessonHistory.selectedLesson}`;
+    fetch(putAPI, {
+      method: 'PUT',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(reflectionObject),
+    })
+      .then(res => res.json())
+      .then(res => commit('updateLessonReflections', res));
+  },
+  deleteLesson({ commit, state }) {
+    const deleteAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.lessonHistory.selectedLesson}`;
+    fetch(deleteAPI, {
+      method: 'DELETE',
+    })
+      .then(commit('updateDeleteLesson'));
+  },
+  getLessonPlans({ commit }) {
+    fetch('https://planrightdb.herokuapp.com/lessonplans')
+      .then(res => res.json())
+      .then(res => commit('saveLessonPlans', res))
+      .then(commit('getFolders'));
+  },
+  //  Goals
+  addReflection: ({ commit }) => commit('addReflection'),
+  deleteGoal({ commit, state }) {
+    const deleteAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.goalData.id}`;
+    fetch(deleteAPI, {
+      method: 'DELETE',
+    })
+      .then(commit('updateDeleteGoal'));
+  },
+  getGoals({ commit }) {
+    fetch('https://planrightdb.herokuapp.com/goals')
+      .then(res => res.json())
+      .then(res => commit('saveGoals', res));
+  },
+  postGoal: ({ commit, state }) => {
+    const goalObject = {
+      componentId: state.goalData.component,
+      name: state.goalData.name,
+      goalData: { Strengths:state.goalData.strengths, Improvements:state.goalData.improve, Actions:state.goalData.actions},
+      goalFinalReflection: '',
+      coachCommentString: '',
+      users_id: 1,
+    };
+    fetch('https://planrightdb.herokuapp.com/goals', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(goalObject),
+    })
+      .then(res => res.json())
+      .then(res => commit('updateGoals', res));
+  },
+  saveFinalReflection: ({ commit, state }) => {
+    const goalObject = {
+      goalFinalReflection: state.goalData.reflection,
+    };
+    const putAPI = `https://planrightdb.herokuapp.com/goals/${state.goalData.id}`;
+
+    fetch(putAPI, {
+      method: 'PUT',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(goalObject),
+    })
+      .then(res => res.json())
+      .then(res => commit('updateGoalReflections', res));
+  },
+  selectGoal: ({ commit }) => commit('selectGoal'),
+  selectGoalComponent: ({ commit }, event) => {
+    commit('selectGoalComponent', event);
+  },
 };
 
-// getters are functions
+
 const getters = {
   authorized: state => state.authorized,
   settingsView: state => state.settingsView,
@@ -604,13 +708,16 @@ const getters = {
   standardsData: state => state.standardsData,
   oldLessonData: state => state.oldLessonData,
   updateLessonConfirm: state => state.updateLessonConfirm,
+  deleteTemplateModal: state => state.deleteTemplateModal,
+  templateData: state => state.templateData,
+  deleteLessonModal: state => state.deleteLessonModal,
+  deleteGoalModal: state => state.deleteGoalModal,
 };
 
-// A Vuex instance is created by combining the state, mutations, actions,
-// and getters.
+
 export default new Vuex.Store({
   state,
   getters,
   actions,
-  mutations
+  mutations,
 });

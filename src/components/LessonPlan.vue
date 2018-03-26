@@ -10,15 +10,16 @@
       <div v-if="newLesson" id="new-menu">
         <h2>Select a Template:</h2>
         <form>
-          <select v-model="templateId" name="templates" v-on:change="getStandardsTemplate">
+          <select v-model="templateData.templateId" name="templates" v-on:change="getStandardsTemplate">
             <option value="">Select a Template</option>
             <option  v-for="template in lessonTemplates" :value="template.id">{{template.name}}</option>
           </select>
         </form>
+        <h6 v-if="templateData.templateId !== 0" v-on:click="deleteTemplateModal.show = true">Delete This Template</h6>
         <h2>Save Your Lesson Plan:</h2>
         <form v-on:submit.prevent="saveData">
           <label for="folder">What folder should the plan go in?</label>
-          <select required v-model="selectedFolder" name="folder">
+          <select required v-model="templateData.selectedFolder" name="folder">
             <option value="">Select a Folder</option>
             <option  v-for="folder in folders" :value="folder">{{folder}}</option>
           </select>
@@ -66,7 +67,7 @@
           </li>
         </ul>
       </div>
-      <div id="template" v-for="template in lessonTemplates" v-if="template.id === templateId" v-html="template.lessonTemplateString" >
+      <div id="template" v-for="template in lessonTemplates" v-if="template.id === templateData.templateId" v-html="template.lessonTemplateString" >
       </div>
     </div>
     <div v-if="oldLesson" class="lesson-plan-template">
@@ -113,71 +114,76 @@
         </select>
         <button v-on:click="addStandard">Add Standard</button>
     </div>
+    <ModalDeleteTemplate v-if="deleteTemplateModal.show"  @close="deleteTemplateModal.show = false" />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import Header from '@/components/Header';
-import Menu from '@/components/Menu';
+import { mapGetters, mapActions } from "vuex";
+import Header from "@/components/Header";
+import Menu from "@/components/Menu";
+import ModalDeleteTemplate from "@/components/ModalDeleteTemplate";
 
 export default {
-  name: 'LessonPlan',
+  name: "LessonPlan",
   components: {
     Header,
-    Menu
+    Menu,
+    ModalDeleteTemplate,
   },
   data() {
     return {
       newLesson: false,
       oldLesson: false,
-      templateId : 0,
-      selectedFolder: '',
-      dateTaught: "2000,01,01",
+      dateTaught: "2000,01,01"
     };
   },
   computed: mapGetters([
-    'lessonTemplates',
-    'lessonPlans',
-    'folders',
-    'saveLessonConfirm',
-    'names',
-    'standards',
-    'standardsData',
-    'oldLessonData',
-    'updateLessonConfirm',
+    "lessonTemplates",
+    "lessonPlans",
+    "folders",
+    "saveLessonConfirm",
+    "names",
+    "standards",
+    "standardsData",
+    "oldLessonData",
+    "updateLessonConfirm",
+    "deleteTemplateModal",
+    "templateData",
   ]),
-  methods:{
+  methods: {
     ...mapActions([
-    'getLessonTemplates',
-    'getLessonPlans',
-    'addFolder',
-    'getStandards',
-    'clearOldStandards',
-  ]),
-    saveData(){
+      "getLessonTemplates",
+      "getLessonPlans",
+      "addFolder",
+      "getStandards",
+      "clearOldStandards",
+      "deleteStandard",
+      "addStandard",
+    ]),
+    saveData() {
       const lessonPlanObject = {};
-      const template = document.getElementById('template');
+      const template = document.getElementById("template");
       const templateForm = template.childNodes[0];
       templateForm.childNodes.forEach(item => {
-        if(item.value !== undefined) {
-        lessonPlanObject[item.id] = item.value;
+        if (item.value !== undefined) {
+          lessonPlanObject[item.id] = item.value;
         }
-      })
+      });
 
       let standardsData;
       let templateString;
       this.lessonTemplates.forEach(template => {
-        if(template.id === this.templateId) {
-          standardsData = template.standards
+        if (template.id === this.templateId) {
+          standardsData = template.standards;
           templateString = template.lessonTemplateString;
         }
-      })
+      });
 
       let standardsObjectNew = {};
       this.standardsData.selectedStandards.forEach(standard => {
         standardsObjectNew[standard.statementNotation] = standard.description;
-      })
+      });
 
       const lessonPlan = {
         name: this.names.lessonName,
@@ -186,94 +192,77 @@ export default {
         standardsObject: standardsObjectNew,
         lessonTemplateString: templateString,
         lessonPlanData: lessonPlanObject,
-        fileName: this.selectedFolder,
+        fileName: this.templateData.selectedFolder,
         teacherReflection: {},
-        coachCommentString: '',
-        users_id: 1,
-      }
-      this.$store.dispatch('saveLessonPlan', lessonPlan)
+        coachCommentString: "",
+        users_id: 1
+      };
+      this.$store.dispatch("saveLessonPlan", lessonPlan);
     },
     getCurrentDate() {
       let currentDate;
       Date.prototype.toDateInputValue = (function() {
         var local = new Date();
         local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
-        currentDate= local.toJSON().slice(0,10);
-      }())
+        currentDate = local.toJSON().slice(0, 10);
+      })();
       this.dateTaught = currentDate;
     },
     getStandardsTemplate() {
       let standardsInfo;
       this.lessonTemplates.forEach(template => {
-        if(template.id === this.templateId) {
+        if (template.id === this.templateData.templateId) {
           standardsInfo = template.standards;
         }
-      })
-      this.$store.dispatch('getStandards', standardsInfo)
-    },
-    addStandard() {
-      let id = this.standardsData.standard;
-      this.standards.forEach(standard => {
-        if(standard.id == id) {
-          this.standardsData.selectedStandards.push(standard);
-        }
-      })
-    },
-    deleteStandard(event) {
-      let index;
-      this.standardsData.selectedStandards.forEach((standard, i) => {
-        if(standard.id == event.target.id) {
-          index = i;
-        }
-      })
-      this.standardsData.selectedStandards.splice(index , 1);
+      });
+      this.$store.dispatch("getStandards", standardsInfo);
     },
     updateOldLessonData() {
-      this.$store.dispatch('updateOldLessonData')
+      this.$store.dispatch("updateOldLessonData");
       setTimeout(() => {
-        const standardsInfo = this.oldLessonData.standards
-        this.$store.dispatch('getStandards', standardsInfo)
+        const standardsInfo = this.oldLessonData.standards;
+        this.$store.dispatch("getStandards", standardsInfo);
 
         const lessonData = this.oldLessonData.lessonPlanData;
-        const template = document.getElementById('template-old');
+        const template = document.getElementById("template-old");
         const templateForm = template.childNodes[0];
 
         templateForm.childNodes.forEach(item => {
-          if(item.value != undefined) {
-            item.value = lessonData[item.id]
+          if (item.value != undefined) {
+            item.value = lessonData[item.id];
           }
-        })
-      }, 2000)
+        });
+      }, 2000);
     },
-    updateLessonPlan(){
+    updateLessonPlan() {
       const lessonPlanObject = {};
-      const template = document.getElementById('template-old');
+      const template = document.getElementById("template-old");
       const templateForm = template.childNodes[0];
       templateForm.childNodes.forEach(item => {
-        if(item.value !== undefined) {
-        lessonPlanObject[item.id] = item.value;
+        if (item.value !== undefined) {
+          lessonPlanObject[item.id] = item.value;
         }
-      })
+      });
 
       let standardsObjectNew = this.oldLessonData.standardsObject;
       this.standardsData.selectedStandards.forEach(standard => {
         standardsObjectNew[standard.statementNotation] = standard.description;
-      })
+      });
 
       const lessonPlan = {
         name: this.oldLessonData.name,
         dateTaught: this.oldLessonData.dateTaught,
         standardsObject: standardsObjectNew,
-        lessonPlanData: lessonPlanObject,
-      }
-      this.$store.dispatch('updateLessonPlan', lessonPlan)
+        lessonPlanData: lessonPlanObject
+      };
+      this.$store.dispatch("updateLessonPlan", lessonPlan);
     }
   },
-  mounted(){
+  mounted() {
     this.getLessonTemplates();
     this.getLessonPlans();
     this.getCurrentDate();
-  },
+  }
 };
 </script>
 
@@ -288,7 +277,7 @@ export default {
 #lesson-plan-menu {
   grid-row: 3/4;
   grid-column: 1/2;
-  background-color: #AFADB3;
+  background-color: #afadb3;
 }
 
 #toggle {
@@ -304,14 +293,14 @@ export default {
   width: 40%;
   height: 2rem;
   color: white;
-  font-size: .8rem;
+  font-size: 0.8rem;
   margin-top: 1rem;
   background-color: #120832;
   border: solid #120832 1px;
   border-radius: 10px;
 }
 
-#edit-menu{
+#edit-menu {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -325,8 +314,14 @@ export default {
   align-items: center;
 }
 
+#new-menu h6 {
+  font-size: .8rem;
+  color: red;
+  cursor: pointer;
+}
+
 #lesson-plan-menu h2 {
-  margin: 2rem 0rem .7rem 0rem;
+  margin: 2rem 0rem 0.7rem 0rem;
   font-size: 1.4rem;
   width: 90%;
   text-align: center;
@@ -343,7 +338,7 @@ export default {
 #lesson-plan-menu select {
   width: 100%;
   height: 2rem;
-  margin: .5rem 0rem .5rem 0rem;
+  margin: 0.5rem 0rem 0.5rem 0rem;
 }
 
 #lesson-plan-menu label {
@@ -354,7 +349,7 @@ export default {
 #lesson-plan-menu input {
   width: 100%;
   height: 2rem;
-  margin: .5rem 0rem .5rem 0rem;
+  margin: 0.5rem 0rem 0.5rem 0rem;
 }
 
 #save {
@@ -363,7 +358,7 @@ export default {
   color: white;
   font-size: 1.1rem;
   margin-top: 2rem;
-  background-color: #D09400;
+  background-color: #d09400;
   border: solid #120832 1px;
   border-radius: 10px;
 }
@@ -371,7 +366,7 @@ export default {
 p {
   margin-top: 1rem;
   font-size: 1.2rem;
-  color: #D09400;
+  color: #d09400;
 }
 
 #newFolder {
@@ -392,7 +387,7 @@ p {
 }
 
 #newFolder h3 {
-  color: #D09400;
+  color: #d09400;
   text-align: center;
 }
 
@@ -401,14 +396,14 @@ p {
   height: 1.5rem;
 }
 
-#add-folder{
+#add-folder {
   height: 60%;
-  background-color: #D09400;
+  background-color: #d09400;
   width: 30% !important;
   border: solid #120832 1px;
   border-radius: 10px;
   height: 1.5rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   margin-top: 0rem;
   margin-left: 1rem;
   color: white;
@@ -446,7 +441,7 @@ p {
 .standards-selected h2 {
   font-size: 1.2rem;
   height: 3vh;
-  margin-top: .4rem;
+  margin-top: 0.4rem;
   font-weight: bold;
   color: white;
 }
@@ -462,12 +457,12 @@ p {
 #clear button {
   margin-left: 4rem;
   width: 20%;
-  background-color: #D09400;
+  background-color: #d09400;
   border: solid #120832 1px;
   border-radius: 10px;
-  font-size: .8rem;
+  font-size: 0.8rem;
   color: white;
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .standards-selected ul {
@@ -480,9 +475,9 @@ p {
 
 .standards-selected li {
   width: 90%;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   background-color: white;
-  padding: .5rem;
+  padding: 0.5rem;
   display: grid;
   grid-template-rows: 75% 25%;
   grid-template-columns: 85% 15%;
@@ -491,15 +486,15 @@ p {
 .standards-selected h3 {
   grid-row: 1/2;
   grid-column: 1/2;
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
 .standards-selected h4 {
   grid-row: 2/3;
   grid-column: 1/2;
-  font-size: .6rem;
+  font-size: 0.6rem;
   font-weight: bold;
-  margin-top: .4rem;
+  margin-top: 0.4rem;
 }
 
 .standards-selected button {
@@ -507,14 +502,13 @@ p {
   grid-column: 2/3;
   justify-self: center;
   align-self: center;
-  background-color: #D09400;
+  background-color: #d09400;
   border: solid #120832 1px;
   border-radius: 100%;
-  font-size: .8rem;
+  font-size: 0.8rem;
   color: white;
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
-
 
 #template {
   width: 100%;
@@ -531,19 +525,19 @@ p {
 
 #template >>> label {
   width: 100%;
-  margin: .5rem 0rem .5rem 2rem;
+  margin: 0.5rem 0rem 0.5rem 2rem;
 }
 
 #template >>> input {
   width: 90%;
   height: 2rem;
   border: solid black 1px;
-  margin: .5rem 0rem .5rem 1rem;
+  margin: 0.5rem 0rem 0.5rem 1rem;
 }
 #template >>> select {
   width: 90%;
   height: 2rem;
-  margin: .5rem 0rem .5rem 1rem;
+  margin: 0.5rem 0rem 0.5rem 1rem;
 }
 #template-old {
   width: 100%;
@@ -560,25 +554,25 @@ p {
 
 #template-old >>> label {
   width: 100%;
-  margin: .5rem 0rem .5rem 2rem;
+  margin: 0.5rem 0rem 0.5rem 2rem;
 }
 
 #template-old >>> input {
   width: 90%;
   height: 2rem;
   border: solid black 1px;
-  margin: .5rem 0rem .5rem 1rem;
+  margin: 0.5rem 0rem 0.5rem 1rem;
 }
 #template-old >>> select {
   width: 90%;
   height: 2rem;
-  margin: .5rem 0rem .5rem 1rem;
+  margin: 0.5rem 0rem 0.5rem 1rem;
 }
 
 #standards-menu {
   grid-row: 3/4;
   grid-column: 3/4;
-  background-color: #AFADB3;
+  background-color: #afadb3;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -596,29 +590,23 @@ p {
   width: 80%;
   text-align: center;
   font-size: 1.2rem;
-  margin: .8rem 0rem .4rem 0rem;
+  margin: 0.8rem 0rem 0.4rem 0rem;
 }
 
 #standards-menu select {
   width: 80%;
   height: 2rem;
-  margin: .5rem 0rem .5rem 0rem;
+  margin: 0.5rem 0rem 0.5rem 0rem;
 }
 
 #standards-menu button {
-  background-color: #D09400;
+  background-color: #d09400;
   width: 60%;
   color: white;
   border: solid #120832 1px;
   border-radius: 10px;
   height: 1.5rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   margin-top: 1rem;
 }
-
-
-
-
-
-
 </style>

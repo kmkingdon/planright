@@ -10,6 +10,8 @@
         <option value="">Select a Goal</option>
         <option v-for="goal in goals" :value="goal.id">{{goal.name}}</option>
       </select>
+      <h2 v-if="goalData.id > 0">Delete this Goal:</h2>
+      <button v-if="goalData.id > 0" v-on:click="deleteGoalModal.show = true">Delete Goal</button>
     </div>
     <div id="goal-display">
       <div v-if="goalData.id === 0" id="new-goal">
@@ -60,6 +62,7 @@
         </div>
       </div>
     </div>
+    <ModalDeleteGoal v-if="deleteGoalModal.show"  @close="deleteGoalModal.show = false" />
   </div>
 </template>
 
@@ -67,16 +70,18 @@
 import { mapGetters, mapActions } from 'vuex';
 import Header from '@/components/Header';
 import Menu from '@/components/Menu';
+import ModalDeleteGoal from "@/components/ModalDeleteGoal";
+
 
 export default {
   name: 'GoalDash',
   components: {
     Header,
-    Menu
+    Menu,
+    ModalDeleteGoal,
   },
   data() {
     return {
-      goalSelected: NaN,
     };
   },
   computed: mapGetters([
@@ -85,6 +90,7 @@ export default {
     'goalData',
     'saveGoalConfirm',
     'saveFinalReflectionConfirm',
+    'deleteGoalModal'
   ]),
   methods:{
     ...mapActions([
