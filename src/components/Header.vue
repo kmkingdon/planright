@@ -2,13 +2,13 @@
   <header>
     <img id="logo" src="../../static/planrightlogo.png" alt="simple-logo"/>
     <div v-if="settingsView" id="setting-menu">
+      <h1>Welcome {{userName}}</h1>
       <h2> Account Settings </h2>
       <h3> Edit Account </h3>
       <h4> Add Coach </h4>
-      <h5> Another Option </h5>
-      <h6> Another Option </h6>
+      <h5> Logout </h5>
     </div>
-    <div v-if="authorized" id="account-info">
+    <div v-if="userData.userId !== 0" id="account-info">
       <img @click="openSettings" id="settings" src="../../static/arrow.png" alt="simple-logo"/>
       <img id="avatar" src="../../static/avatar.jpg" alt="simple-logo"/>
     </div>
@@ -17,19 +17,32 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import decode from 'jwt-decode';
 
 export default {
   name: 'Header',
   data() {
     return {
+      userName : '',
     };
   },
   computed: mapGetters([
-    'authorized', 'settingsView'
+    'userData',
+    'settingsView'
   ]),
-  methods: mapActions([
-    'openSettings'
-  ])
+  methods:{
+    ...mapActions([
+      'openSettings'
+    ]),
+    getTokenInfo() {
+      let token = localStorage.getItem('token');
+      let decodedToken= decode(token);
+      this.userName = decodedToken.userName;
+    }
+  },
+  mounted(){
+    this.getTokenInfo();
+  }
 };
 </script>
 
@@ -90,12 +103,20 @@ header{
   align-self: center;
   border: solid black 1px;
   display: grid;
-  grid-template-rows: 30% 35% 35%;
-  grid-template-columns: 50% 50%;
+  grid-template-rows: 20% 30% 50%;
+  grid-template-columns: 33% 33% 33%;
+}
+
+#setting-menu h1 {
+  grid-row: 1/2;
+  grid-column: 1/end;
+  justify-self: center;
+  align-self: center;
+  color: white;
 }
 
 #setting-menu h2 {
-  grid-row: 1/2;
+  grid-row: 2/3;
   grid-column: 1/end;
   font-family: 'Nanum+Myeongjo';
   color: white;
@@ -103,46 +124,29 @@ header{
   align-self: center;
   font-size: 1.4rem;
   font-weight: bold;
-  text-shadow:
-   -1px -1px 0 #120832,
-    1px -1px 0 #120832,
-    -1px 1px 0 #120832,
-     1px 1px 0 #120832;
 }
 
 #setting-menu h3 {
-  grid-row: 2/3;
+  grid-row: 3/4;
   grid-column: 1/2;
-  justify-self: start;
+  justify-self: center;
   align-self: center;
-  margin-left: 2rem;
   color: #120832;
 }
 
 #setting-menu h4 {
   grid-row: 3/4;
-  grid-column: 1/2;
-  justify-self: start;
+  grid-column: 2/3;
+  justify-self: center;
   align-self: center;
-  margin-left: 2rem;
   color: #120832;
 }
 
 #setting-menu h5 {
-  grid-row: 2/3;
-  grid-column: 2/3;
-  justify-self: start;
-  align-self: center;
-  margin-left: 2rem;
-  color: #120832;
-}
-
-#setting-menu h6 {
   grid-row: 3/4;
-  grid-column: 2/3;
-  justify-self: start;
+  grid-column: 3/4;
+  justify-self: center;
   align-self: center;
-  margin-left: 2rem;
   color: #120832;
 }
 

@@ -1,11 +1,18 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import router from './router';
 Vue.use(Vuex);
 
 const state = {
   //  Authorization and Account Management
-  authorized: true,
-  userId: 1,
+  loginData:{
+    email: '',
+    password: '',
+  },
+  userData: {
+    userId: 0,
+    warning: '',
+  },
   settingsView: false,
   //  Application data
   goals: [],
@@ -94,14 +101,24 @@ const state = {
 
 };
 
+
+
+
 const mutations = {
   //  Authorization and Account Managment
+
   openSettings(state) {
     if (state.settingsView === false) {
       state.settingsView = true;
     } else {
       state.settingsView = false;
     }
+  },
+  setError(state, error){
+    state.userData.warning = error;
+  },
+  updateUserData(state, res){
+    state.userData.userId = res;
   },
   //  Lesson Template
   arrangeComponentList(state) {
@@ -361,11 +378,38 @@ const mutations = {
   },
 };
 
+
+
+
 const actions = {
   //  Authorization and Account Management
+  login: ({ commit, state }) => {
+    const loginObject = {
+      email: state.loginData.email,
+      password: state.loginData.password,
+    };
+
+    fetch('https://planrightdb.herokuapp.com/login', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(loginObject),
+    })
+      .then(res => res.json())
+      .then((response) => {
+        if (response.error) {
+          commit('setError', response.error);
+        } else {
+          commit('updateUserData', response.id);
+          router.push({ path: '/dashboard' })
+          localStorage.setItem('token', response.token);
+        }
+      })
+  },
   openSettings: ({ commit }) => commit('openSettings'),
   //  Lesson Template
   addLessonComponent: ({ commit, state }) => {
+    const token = localStorage.getItem('token');
+
     const lessonComponentObject = {
       name: state.addModal.name,
       order: 0,
@@ -374,7 +418,7 @@ const actions = {
     }
     fetch('https://planrightdb.herokuapp.com/components', {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(lessonComponentObject),
     })
       .then(res => res.json())
@@ -384,7 +428,13 @@ const actions = {
   changeTemplateStepNext: ({ commit }) => commit('changeTemplateStepNext'),
   changeTemplateStepBack: ({ commit }) => commit('changeTemplateStepBack'),
   getComponents({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/components')
+    const token = localStorage.getItem('token');
+    fetch('https://planrightdb.herokuapp.com/components', {
+      method: 'GET',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
+    })
       .then(res => res.json())
       .then(res => commit('saveComponents', res));
   },
@@ -438,10 +488,10 @@ const actions = {
       lessonTemplateString: templateString,
       users_id: 1,
     };
-
+    const token = localStorage.getItem('token');
     fetch('https://planrightdb.herokuapp.com/lessontemplates', {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(templateObject),
     })
       .then(res => res.json())
@@ -458,14 +508,24 @@ const actions = {
     commit('deleteStandard', event);
   },
   deleteTemplate({ commit, state }) {
+    const token = localStorage.getItem('token');
     const deleteAPI = `https://planrightdb.herokuapp.com/lessontemplates/${state.templateData.templateId}`;
     fetch(deleteAPI, {
       method: 'DELETE',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
     })
       .then(commit('updateDeleteTemplate'));
   },
   getLessonTemplates({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/lessontemplates')
+    const token = localStorage.getItem('token');
+    fetch('https://planrightdb.herokuapp.com/lessontemplates', {
+      method: 'GET',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
+    })
       .then(res => res.json())
       .then(res => commit('saveLessonTemplates', res));
   },
@@ -575,9 +635,10 @@ const actions = {
       .then(res => commit('saveStandards', res));
   },
   saveLessonPlan: ({ commit }, plan) => {
+    const token = localStorage.getItem('token');
     fetch('https://planrightdb.herokuapp.com/lessonplans', {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(plan),
     })
       .then(res => res.json())
@@ -587,11 +648,12 @@ const actions = {
     commit('selectLesson', event);
   },
   updateLessonPlan: ({ commit, state }, lessonPlan) => {
+    const token = localStorage.getItem('token');
     const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.oldLessonData.lessonId}`;
 
     fetch(putAPI, {
       method: 'PUT',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(lessonPlan),
     })
       .then(res => res.json())
@@ -600,6 +662,7 @@ const actions = {
   updateOldLessonData: ({ commit }) => commit('updateOldLessonData'),
   //  Lesson History
   addLessonReflection: ({ commit, state }) => {
+    const token = localStorage.getItem('token');
     const reflectionObject = {
       teacherReflection: {
         actions: state.lessonReflection.actions,
@@ -610,21 +673,31 @@ const actions = {
     const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.lessonHistory.selectedLesson}`;
     fetch(putAPI, {
       method: 'PUT',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(reflectionObject),
     })
       .then(res => res.json())
       .then(res => commit('updateLessonReflections', res));
   },
   deleteLesson({ commit, state }) {
+    const token = localStorage.getItem('token');
     const deleteAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.lessonHistory.selectedLesson}`;
     fetch(deleteAPI, {
       method: 'DELETE',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
     })
       .then(commit('updateDeleteLesson'));
   },
   getLessonPlans({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/lessonplans')
+    const token = localStorage.getItem('token');
+    fetch('https://planrightdb.herokuapp.com/lessonplans', {
+      method: 'GET',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
+    })
       .then(res => res.json())
       .then(res => commit('saveLessonPlans', res))
       .then(commit('getFolders'));
@@ -632,18 +705,29 @@ const actions = {
   //  Goals
   addReflection: ({ commit }) => commit('addReflection'),
   deleteGoal({ commit, state }) {
+    const token = localStorage.getItem('token');
     const deleteAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.goalData.id}`;
     fetch(deleteAPI, {
       method: 'DELETE',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
     })
       .then(commit('updateDeleteGoal'));
   },
   getGoals({ commit }) {
-    fetch('https://planrightdb.herokuapp.com/goals')
+    const token = localStorage.getItem('token');
+    fetch('https://planrightdb.herokuapp.com/goals', {
+      method: 'GET',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
+    })
       .then(res => res.json())
       .then(res => commit('saveGoals', res));
   },
   postGoal: ({ commit, state }) => {
+    const token = localStorage.getItem('token');
     const goalObject = {
       componentId: state.goalData.component,
       name: state.goalData.name,
@@ -654,13 +738,14 @@ const actions = {
     };
     fetch('https://planrightdb.herokuapp.com/goals', {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(goalObject),
     })
       .then(res => res.json())
       .then(res => commit('updateGoals', res));
   },
   saveFinalReflection: ({ commit, state }) => {
+    const token = localStorage.getItem('token');
     const goalObject = {
       goalFinalReflection: state.goalData.reflection,
     };
@@ -668,7 +753,7 @@ const actions = {
 
     fetch(putAPI, {
       method: 'PUT',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(goalObject),
     })
       .then(res => res.json())
@@ -712,6 +797,8 @@ const getters = {
   templateData: state => state.templateData,
   deleteLessonModal: state => state.deleteLessonModal,
   deleteGoalModal: state => state.deleteGoalModal,
+  loginData: state => state.loginData,
+  userData: state => state.userData,
 };
 
 

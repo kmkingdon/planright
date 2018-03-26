@@ -2,13 +2,14 @@
   <div id="home">
     <Header />
     <div id="login">
-      <form>
+      <form v-on:submit.prevent="login">
         <h2> Sign In </h2>
-        <label class="labels" for="username"> Username </label>
-        <input type="text" name="username"/>
+        <label class="labels" for="username"> Email</label>
+        <input v-model="loginData.email" type="text" name="username"/>
         <label class="labels" for="password"> Password </label>
-        <input type="password" name="password"/>
-        <router-link id="login-submit" to="/dashboard">Login</router-link>
+        <input v-model="loginData.password" type="password" name="password"/>
+        <input type="submit" value="Login" />
+        <p>{{userData.warning}}</p>
       </form>
     </div>
   </div>
@@ -27,11 +28,12 @@ export default {
     return {
     };
   },
-  computed: mapGetters({
-
-  }),
+  computed: mapGetters([
+    'loginData',
+    'userData'
+  ]),
   methods: mapActions([
-
+    'login'
   ])
 };
 </script>

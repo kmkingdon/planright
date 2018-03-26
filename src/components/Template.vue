@@ -7,28 +7,40 @@
         <h1> Design Your Template </h1>
         <div id="template-steps">
           <img class="checkboxes" v-if="templateStep === 1" src="../../static/checkbox.png" />
-          <img class="checkboxes" v-if="templateStep > 1" src="../../static/checkboxcompleted.png" />
+          <transition name="tada" enter-active-class="tada">
+            <img class="checkboxes" v-if="templateStep > 1" src="../../static/checkboxcompleted.png" />
+          </transition>
           <h2 v-bind:class="{active:(templateStep === 1)}"> Pick Your Standards </h2>
           <img class="checkboxes" v-if="templateStep <= 2" src="../../static/checkbox.png" />
-          <img class="checkboxes" v-if="templateStep > 2" src="../../static/checkboxcompleted.png" />
+          <transition name="tada" enter-active-class="tada">
+            <img class="checkboxes" v-if="templateStep > 2" src="../../static/checkboxcompleted.png" />
+          </transition>
           <h2 v-bind:class="{active:(templateStep === 2)}"> Pick Your Components </h2>
           <img class="checkboxes" v-if="templateStep <= 3" src="../../static/checkbox.png" />
-          <img class="checkboxes" v-if="templateStep > 3" src="../../static/checkboxcompleted.png" />
+          <transition name="tada" enter-active-class="tada">
+            <img class="checkboxes" v-if="templateStep > 3" src="../../static/checkboxcompleted.png" />
+          </transition>
           <h2 v-bind:class="{active:(templateStep === 3)}"> Arrange Your Components </h2>
           <img class="checkboxes" v-if="templateStep <= 4" src="../../static/checkbox.png" />
-          <img class="checkboxes" v-if="templateStep > 4" src="../../static/checkboxcompleted.png" />
+          <transition name="tada" enter-active-class="tada">
+            <img class="checkboxes" v-if="templateStep > 4" src="../../static/checkboxcompleted.png" />
+          </transition>
           <h2 v-bind:class="{active:(templateStep === 4)}"> Customize Components </h2>
           <img class="checkboxes" v-if="templateStep <= 5 && !saveTemplateConfirm" src="../../static/checkbox.png" />
-          <img class="checkboxes" v-if="saveTemplateConfirm" src="../../static/checkboxcompleted.png" />
+          <transition name="tada" enter-active-class="tada">
+            <img class="checkboxes" v-if="saveTemplateConfirm" src="../../static/checkboxcompleted.png" />
+          </transition>
           <h2 v-bind:class="{active:(templateStep === 5)}"> Save Your Template</h2>
         </div>
       </aside>
       <div id="selected-template">
-        <Standards v-if="templateStep === 1" />
-        <Components v-if="templateStep === 2" />
-        <Arrange v-if="templateStep === 3" />
-        <DropDowns v-if="templateStep === 4" />
-        <SaveTemplate v-if="templateStep === 5" />
+        <transition name="fade">
+          <Standards v-if="templateStep === 1" />
+          <Components v-if="templateStep === 2" />
+          <Arrange v-if="templateStep === 3" />
+          <DropDowns v-if="templateStep === 4" />
+          <SaveTemplate v-if="templateStep === 5" />
+        </transition>
       </div>
     </div>
   </div>
@@ -145,5 +157,45 @@ aside h1 {
      1px 1px 0 #120832;
 }
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s ease-out;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  20% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+
+  40%,
+  60%,
+  80% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.tada {
+  animation-name: tada;
+  animation-duration: 2s;
+}
 
 </style>
