@@ -12,6 +12,7 @@ const state = {
   saveGoalConfirm: false,
   saveFinalReflectionConfirm: false,
   saveLessonReflectionConfirm: false,
+  updateLessonConfirm: false,
   templateStep: 1,
   standardsSelected: {
     standardsSet: "",
@@ -59,6 +60,16 @@ const state = {
     substrand: '',
     standard: '',
     selectedStandards: [],
+  },
+  oldLessonData:{
+    lessonId: 0,
+    name: "",
+    dateTaught: "2000,01,01",
+    standards: {},
+    standardsObject: {},
+    lessonTemplateString: '',
+    lessonPlanData: {},
+    fileName: "",
   },
 };
 
@@ -243,6 +254,34 @@ const mutations = {
     setTimeout(function() {
       state.saveLessonReflectionConfirm = false;
     }, 5000);
+  },
+  updateOldLessonData(state) {
+    const lesson = state.lessonPlans.filter(plan => plan.id == state.oldLessonData.lessonId)[0]
+
+    const date = lesson.dateTaught.split('T')[0];
+    state.oldLessonData.name = lesson.name;
+    state.oldLessonData.dateTaught = date;
+    state.oldLessonData.standards = lesson.standards;
+    state.oldLessonData.standardsObject = lesson.standardsObject;
+    state.oldLessonData.lessonTemplateString = lesson.lessonTemplateString;
+    state.oldLessonData.lessonPlanData = lesson.lessonPlanData;
+    state.oldLessonData.fileName = lesson.fileName;
+  },
+  clearOldStandards(state) {
+    state.oldLessonData.standardsObject = {};
+  },
+  updateLessonPlans(state, res) {
+    state.updateLessonConfirm = true;
+    let index;
+    state.lessonPlans.forEach((lesson, i) => {
+      if(lesson.id === res.lessons.id) {
+        index = i;
+      }
+    })
+    state.lessonPlans.splice(index , 1, res.lessons);
+    setTimeout(function() {
+      state.updateLessonConfirm = false;
+    }, 5000);
   }
 };
 
@@ -251,10 +290,12 @@ const actions = {
   changeTemplateStepNext: ({ commit }) => commit("changeTemplateStepNext"),
   changeTemplateStepBack: ({ commit }) => commit("changeTemplateStepBack"),
   resetTemplateVariables: ({ commit }) => commit("resetTemplateVariables"),
+  updateOldLessonData: ({ commit }) => commit("updateOldLessonData"),
   selectGoal: ({ commit }) => commit("selectGoal"),
   addFolder: ({ commit }) => commit("addFolder"),
   addReflection: ({ commit }) => commit("addReflection"),
   restartTemplate: ({ commit }) => commit("resetTemplateVariables"),
+  clearOldStandards: ({ commit }) => commit("clearOldStandards"),
   getComponents({ commit }) {
     fetch("https://planrightdb.herokuapp.com/components")
       .then(res => res.json())
@@ -416,7 +457,6 @@ const actions = {
       .then(res => commit("updateLessonComponents", res));
   },
   getStandards: ({ commit, state }, standardsInfo) => {
-    console.log(standardsInfo)
     let APIurl;
 
     if(standardsInfo.standardsSet === "CommonCoreMath"){
@@ -521,15 +561,19 @@ const actions = {
     })
       .then(res => res.json())
       .then(res => commit("saveStandards", res));
-  }
+  },
+  updateLessonPlan: ({ commit, state }, lessonPlan) => {
 
-  // searchStandards({ commit }) {
-  //   var client = algoliasearch('O7L4OQENOZ', 'def640649a42fff2f56df3c284c27230');
-  //   var index = client.initIndex('common-standards-project');
-  //   index.search('Common Core State Standards Mathematics', function searchDone(err, content) {
-  //   console.log(err, content)
-  //   });
-  // }
+    const putAPI = `https://planrightdb.herokuapp.com/lessonplans/${state.oldLessonData.lessonId}`;
+
+    fetch(putAPI, {
+      method: "PUT",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(lessonPlan)
+    })
+      .then(res => res.json())
+      .then(res => commit('updateLessonPlans', res));
+  }
 };
 
 // getters are functions
@@ -558,6 +602,8 @@ const getters = {
   lessonReflection: state => state.lessonReflection,
   saveLessonReflectionConfirm: state => state.saveLessonReflectionConfirm,
   standardsData: state => state.standardsData,
+  oldLessonData: state => state.oldLessonData,
+  updateLessonConfirm: state => state.updateLessonConfirm,
 };
 
 // A Vuex instance is created by combining the state, mutations, actions,

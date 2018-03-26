@@ -37,28 +37,17 @@
       <div v-if="oldLesson" id="edit-menu">
         <h2>Open a Lesson Plan:</h2>
         <form>
-          <select  v-model="lessonId" name="plans" v-on:change="startUpdate">
+          <select  v-model="oldLessonData.lessonId" name="plans" v-on:change="updateOldLessonData">
             <option value="">Select a Lesson Plan</option>
             <option  v-for="plan in lessonPlans" :value="plan.id">{{plan.name}}</option>
           </select>
         </form>
         <h2>Save Your Changes:</h2>
-        <form v-on:submit.prevent="saveData">
-          <label for="folder">What folder should the plan go in?</label>
-          <select required v-model="selectedFolder" name="folder">
-            <option value="">Select a Folder</option>
-            <option  v-for="folder in folders" :value="folder">{{folder}}</option>
-          </select>
-          <div id="newFolder">
-            <form v-on:submit.prevent="addFolder">
-              <input required  placeholder="New Folder Name" type="text" v-model="names.folderName" name="folder"/>
-              <input id="add-folder" type="submit" value="Add" />
-            </form>
-          </div>
+        <form v-on:submit.prevent="updateLessonPlan">
           <label for="lessonName">What is the name of your lesson plan?</label>
-          <input required  type="text" :value="oldLessonData.name" name="lessonName">
+          <input required  type="text" v-model="oldLessonData.name" name="lessonName">
           <input id="save" type="submit" name="button" value="Save Lesson Plan"/>
-          <p v-if="saveLessonConfirm"> Lesson Saved!</p>
+          <p v-if="updateLessonConfirm"> Lesson Saved!</p>
         </form>
       </div>
     </div>
@@ -73,6 +62,7 @@
           <li v-for="standard in standardsData.selectedStandards">
             <h3>{{standard.description}}</h3>
             <h4>{{standard.statementNotation}}</h4>
+            <button :id="standard.id" v-on:click="deleteStandard">X</button>
           </li>
         </ul>
       </div>
@@ -85,11 +75,19 @@
         <input v-model="oldLessonData.dateTaught" type="date"/>
       </div>
       <div class="standards-selected">
-        <h2>Standards:</h2>
+        <div id="clear" >
+          <h2>Standards:</h2>
+          <button v-on:click="clearOldStandards">Clear Old Standards</button>
+        </div>
         <ul>
           <li v-for="(value, key) in oldLessonData.standardsObject">
             <h3>{{value}}</h3>
             <h4>{{key}}</h4>
+          </li>
+          <li v-for="standard in standardsData.selectedStandards">
+            <h3>{{standard.description}}</h3>
+            <h4>{{standard.statementNotation}}</h4>
+            <button :id="standard.id" v-on:click="deleteStandard">X</button>
           </li>
         </ul>
       </div>
@@ -134,16 +132,6 @@ export default {
       newLesson: false,
       oldLesson: false,
       templateId : 0,
-      lessonId: 0,
-      oldLessonData:{
-        name: "",
-        dateTaught: "2000,01,01",
-        standards: {},
-        standardsObject: {},
-        lessonTemplateString: '',
-        lessonPlanData: {},
-        fileName: "",
-      },
       selectedFolder: '',
       dateTaught: "2000,01,01",
     };
@@ -155,7 +143,9 @@ export default {
     'saveLessonConfirm',
     'names',
     'standards',
-    'standardsData'
+    'standardsData',
+    'oldLessonData',
+    'updateLessonConfirm',
   ]),
   methods:{
     ...mapActions([
@@ -163,6 +153,7 @@ export default {
     'getLessonPlans',
     'addFolder',
     'getStandards',
+    'clearOldStandards',
   ]),
     saveData(){
       const lessonPlanObject = {};
@@ -220,9 +211,6 @@ export default {
       })
       this.$store.dispatch('getStandards', standardsInfo)
     },
-    getStandardsOld() {
-      this.$store.dispatch('getStandards', this.oldLessonData.standards)
-    },
     addStandard() {
       let id = this.standardsData.standard;
       this.standards.forEach(standard => {
@@ -231,37 +219,54 @@ export default {
         }
       })
     },
-    startUpdate() {
-      this.updateOldLessonData();
-      this.getStandardsOld()
+    deleteStandard(event) {
+      let index;
+      this.standardsData.selectedStandards.forEach((standard, i) => {
+        if(standard.id == event.target.id) {
+          index = i;
+        }
+      })
+      this.standardsData.selectedStandards.splice(index , 1);
     },
     updateOldLessonData() {
-      if(this.lessonId != 0) {
-        const lesson = this.lessonPlans.filter(plan => plan.id == this.lessonId)[0]
+      this.$store.dispatch('updateOldLessonData')
+      setTimeout(() => {
+        const standardsInfo = this.oldLessonData.standards
+        this.$store.dispatch('getStandards', standardsInfo)
 
-        const date = lesson.dateTaught.split('T')[0];
-        this.oldLessonData.name = lesson.name;
-        this.oldLessonData.dateTaught = date;
-        this.oldLessonData.standards = lesson.standards;
-        this.oldLessonData.standardsObject = lesson.standardsObject;
-        this.oldLessonData.lessonTemplateString = lesson.lessonTemplateString;
-        this.oldLessonData.lessonPlanData = lesson.lessonPlanData;
-        this.oldLessonData.fileName = lesson.fileName;
+        const lessonData = this.oldLessonData.lessonPlanData;
+        const template = document.getElementById('template-old');
+        const templateForm = template.childNodes[0];
 
-        setTimeout(() => {
+        templateForm.childNodes.forEach(item => {
+          if(item.value != undefined) {
+            item.value = lessonData[item.id]
+          }
+        })
+      }, 2000)
+    },
+    updateLessonPlan(){
+      const lessonPlanObject = {};
+      const template = document.getElementById('template-old');
+      const templateForm = template.childNodes[0];
+      templateForm.childNodes.forEach(item => {
+        if(item.value !== undefined) {
+        lessonPlanObject[item.id] = item.value;
+        }
+      })
 
-          const lessonData = lesson.lessonPlanData;
+      let standardsObjectNew = this.oldLessonData.standardsObject;
+      this.standardsData.selectedStandards.forEach(standard => {
+        standardsObjectNew[standard.statementNotation] = standard.description;
+      })
 
-          const template = document.getElementById('template-old');
-          const templateForm = template.childNodes[0];
-
-          templateForm.childNodes.forEach(item => {
-            if(item.value != undefined) {
-              item.value = lessonData[item.id]
-            }
-          })
-        }, 2000)
+      const lessonPlan = {
+        name: this.oldLessonData.name,
+        dateTaught: this.oldLessonData.dateTaught,
+        standardsObject: standardsObjectNew,
+        lessonPlanData: lessonPlanObject,
       }
+      this.$store.dispatch('updateLessonPlan', lessonPlan)
     }
   },
   mounted(){
@@ -306,7 +311,14 @@ export default {
   border-radius: 10px;
 }
 
-#new-menu , #edit-menu{
+#edit-menu{
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#new-menu {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -316,10 +328,12 @@ export default {
 #lesson-plan-menu h2 {
   margin: 2rem 0rem .7rem 0rem;
   font-size: 1.4rem;
+  width: 90%;
+  text-align: center;
 }
 
 #lesson-plan-menu form {
-  width: 90%;
+  width: 85%;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -399,7 +413,6 @@ p {
   margin-left: 1rem;
   color: white;
   font-size: 1rem;
-
 }
 
 .lesson-plan-template {
@@ -417,7 +430,6 @@ p {
   flex-flow: row;
   justify-content: space-around;
   align-items: center;
-  border-bottom: solid #AFADB3 3px;
 }
 
 .standards-selected {
@@ -427,13 +439,35 @@ p {
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
-  border-bottom: solid #AFADB3 3px;
+  background-color: #495669;
   overflow: scroll;
 }
 
 .standards-selected h2 {
   font-size: 1.2rem;
+  height: 3vh;
+  margin-top: .4rem;
   font-weight: bold;
+  color: white;
+}
+
+#clear {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#clear button {
+  margin-left: 4rem;
+  width: 20%;
+  background-color: #D09400;
+  border: solid #120832 1px;
+  border-radius: 10px;
+  font-size: .8rem;
+  color: white;
+  font-size: .8rem;
 }
 
 .standards-selected ul {
@@ -446,18 +480,41 @@ p {
 
 .standards-selected li {
   width: 90%;
-  list-style: circle;
+  margin-top: .5rem;
+  background-color: white;
+  padding: .5rem;
+  display: grid;
+  grid-template-rows: 75% 25%;
+  grid-template-columns: 85% 15%;
 }
 
 .standards-selected h3 {
+  grid-row: 1/2;
+  grid-column: 1/2;
   font-size: .7rem;
 }
 
 .standards-selected h4 {
+  grid-row: 2/3;
+  grid-column: 1/2;
   font-size: .6rem;
   font-weight: bold;
   margin-top: .4rem;
 }
+
+.standards-selected button {
+  grid-row: 1/3;
+  grid-column: 2/3;
+  justify-self: center;
+  align-self: center;
+  background-color: #D09400;
+  border: solid #120832 1px;
+  border-radius: 100%;
+  font-size: .8rem;
+  color: white;
+  font-size: .8rem;
+}
+
 
 #template {
   width: 100%;

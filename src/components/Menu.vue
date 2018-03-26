@@ -1,7 +1,7 @@
 <template>
     <div id="menu">
       <router-link to="/template">Design A Template</router-link>
-      <router-link to="/lessonplan">Make A Lesson Plan</router-link>
+      <router-link to="/lessonplan">Make/Edit Lesson Plans</router-link>
       <router-link to="/planhistory">Lesson Plan History</router-link>
       <router-link to="/goaldash">Goals and Reflections</router-link>
     </div>

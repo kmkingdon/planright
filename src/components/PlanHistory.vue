@@ -25,7 +25,7 @@
         <h2>Date Taught:{{lesson.dateTaught | formatDate}}</h2>
         <ul id="standards-view">
           <h2>Standards</h2>
-          <li v-for="(value, key) in lesson.standards">
+          <li v-for="(value, key) in lesson.standardsObject">
             <h3>{{value}}</h3>
             <h4>{{key}}</h4>
           </li>
