@@ -4,7 +4,7 @@
     <div v-if="settingsView" id="setting-menu">
       <h1>Welcome {{userName}}</h1>
       <h2> Account Settings </h2>
-      <h3 v-on:click="modaledit.show"> Edit Account </h3>
+      <h3 v-on:click="modaledit.show = true"> Change Avatar </h3>
       <h4> Add Coach </h4>
       <h5 v-on:click="logout"> Logout </h5>
     </div>

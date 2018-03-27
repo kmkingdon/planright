@@ -3,7 +3,7 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <button id="close" class="modal-default-button" v-on:click="modalEdit.show = false">
+          <button id="close" class="modal-default-button" v-on:click="modaledit.show = false">
             CLOSE
           </button>
           <h2>Pick an Avatar:</h2>
@@ -31,7 +31,7 @@ export default {
     };
   },
   computed: mapGetters([
-    'modalEdit',
+    'modaledit',
     'userData',
   ]),
   methods: {
@@ -74,7 +74,7 @@ export default {
   border-radius: 2px;
   transition: all .3s ease;
   display: grid;
-  grid-template-rows: 5% 10% 60% 25%;
+  grid-template-rows: 5% 20% 75%;
   grid-template-columns: 90% 10%;
 }
 

@@ -224,12 +224,17 @@ const mutations = {
   },
   //  Lesson Planning
   addFolder(state) {
-    state.folders.forEach((folder) => {
-      if (state.names.folderName !== folder) {
-        state.folders.push(state.names.folderName);
-        state.names.folderName = '';
-      }
-    });
+    if(state.folders.length === 0) {
+      state.folders.push(state.names.folderName);
+      state.names.folderName = '';
+    } else {
+      state.folders.forEach((folder) => {
+        if (state.names.folderName !== folder) {
+          state.folders.push(state.names.folderName);
+          state.names.folderName = '';
+        }
+      });
+    }
   },
   addStandard(state) {
     let id = state.standardsData.standard;
@@ -442,7 +447,7 @@ const actions = {
   openSettings: ({ commit }) => commit('openSettings'),
   signUp: ({ commit, state }) => {
     const signupObject = {
-      username: state.signUpData.username,
+      userName: state.signUpData.username,
       email: state.signUpData.email,
       password: state.signUpData.password,
       teacherAccount: true,
