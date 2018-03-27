@@ -592,106 +592,15 @@ const actions = {
       .then(res => commit('saveLessonTemplates', res));
   },
   getStandards: ({ commit, state }, standardsInfo) => {
-    let APIurl;
+    const standardsObject = {
+      gradeLevel: standardsInfo.gradeLevel,
+      standardsSet: standardsInfo.standardsSet,
+    };
 
-    if(standardsInfo.standardsSet === 'CommonCoreMath') {
-      switch (standardsInfo.gradeLevel) {
-        case '1':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-01'
-          break;
-        case '2':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-02'
-          break;
-        case '3':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-03'
-          break;
-        case '4':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-04'
-          break;
-        case '5':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-05'
-          break;
-        case '6':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-06'
-          break;
-        case '7':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-07'
-          break;
-        case '8':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grade-08'
-          break;
-        case '9-10-11-12':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FB_grades-09-10-11-12'
-          break;
-        default:
-      }
-    } else if(standardsInfo.standardsSet === 'CommonCoreEnglish') {
-      switch (standardsInfo.gradeLevel) {
-        case '1':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-01'
-          break;
-        case '2':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-02'
-          break;
-        case '3':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-03'
-          break;
-        case '4':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-04'
-          break;
-        case '5':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-05'
-          break;
-        case '6':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-06'
-          break;
-        case '7':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-07'
-          break;
-        case '8':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grade-08'
-          break;
-        case '9-10-11-12':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/67810E9EF6944F9383DCC602A3484C23_D10003FC_grades-09-10-11-12'
-          break;
-        default:
-      }
-    } else if(standardsInfo.standardsSet === 'NextGenerationScience') {
-      switch (standardsInfo.gradeLevel) {
-        case '1':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-01'
-          break;
-        case '2':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-02'
-          break;
-        case '3':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-03'
-          break;
-        case '4':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-04'
-          break;
-        case '5':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grade-05'
-          break;
-        case '6':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08'
-          break;
-        case '7':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08'
-          break;
-        case '8':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-06-07-08'
-          break;
-        case '9-10-11-12':
-          APIurl = 'http://commonstandardsproject.com/api/v1/standard_sets/71E5AA409D894EB0B43A8CD82F727BFE_D2454348_grades-09-10-11-12'
-          break;
-        default:
-      }
-    }
-
-    fetch(APIurl, {
-      method: 'GET',
-      headers: { 'API-KEY': 'GGbhskDed9DkGM9u3pZgR7TU' },
+    fetch('https://standards-express-server.herokuapp.com/standards', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(standardsObject),
     })
       .then(res => res.json())
       .then(res => commit('saveStandards', res));

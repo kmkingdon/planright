@@ -50,8 +50,8 @@
           <div id="goal-review" v-for="goal in goals" v-if="goal.id === lessonHistory.reflectionGoal">
             <h6 >Your Goal:<br/> {{goal.name}} </h6>
             <h6 v-for="lesson in lessonComponents" v-if="lesson.id === goal.componentId">Lesson Component:<br/>{{lesson.name}}</h6>
-            <p>You want to improve: <br/><br/>{{goal.goalData.improve}} </p>
-            <p>You commited to the following actions: <br/><br/>{{goal.goalData.actions}} </p>
+            <p>You want to improve: <br/><br/>{{goal.goalData.Improve}} </p>
+            <p>You commited to the following actions: <br/><br/>{{goal.goalData.Actions}} </p>
           </div>
           <form v-on:submit.prevent="addLessonReflection">
             <label for="actions">Describe how you did your goal actions in this lesson:</label>

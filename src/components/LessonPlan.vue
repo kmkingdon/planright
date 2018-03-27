@@ -175,7 +175,7 @@ export default {
       let standardsData;
       let templateString;
       this.lessonTemplates.forEach(template => {
-        if (template.id === this.templateId) {
+        if (template.id === this.templateData.templateId) {
           standardsData = template.standards;
           templateString = template.lessonTemplateString;
         }
