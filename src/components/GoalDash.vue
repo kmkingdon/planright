@@ -2,7 +2,7 @@
   <div id="goal-dashboard">
     <Header />
     <Menu />
-    <div id="goal-menu">
+    <div id="goal-menu" class="fadeIn">
       <h2>Make a New Goal:</h2>
       <button v-on:click="newGoal">New Goal</button>
       <h2>Open a Goal:</h2>
@@ -13,8 +13,8 @@
       <h2 v-if="goalData.id > 0">Delete this Goal:</h2>
       <button v-if="goalData.id > 0" v-on:click="deleteGoalModal.show = true">Delete Goal</button>
     </div>
-    <div id="goal-display">
-      <div v-if="goalData.id === 0" id="new-goal">
+    <div id="goal-display" >
+      <div v-if="goalData.id === 0" id="new-goal" class="fadeIn">
         <h1>Make a New Goal:</h1>
         <h2>Select a Component of Your Lesson Plan:</h2>
         <div id="component-select">
@@ -38,7 +38,7 @@
           <p v-if="saveGoalConfirm">Goal Saved!</p>
         </form>
       </div>
-      <div id="goal-view" v-for="goal in goals" v-if="goalData.id === goal.id">
+      <div id="goal-view"  class="fadeIn" v-for="goal in goals" v-if="goalData.id === goal.id">
         <h1>{{goal.name}}</h1>
         <h2 v-for="component in lessonComponents" v-if="component.id === goal.componentId"> Your goal focusing on: {{component.name}}</h2>
         <ul>
@@ -47,7 +47,7 @@
             <h4>{{key}}</h4>
           </li>
         </ul>
-        <div id="final-reflection" v-if="goal.goalFinalReflection === ''">
+        <div id="final-reflection" class="fadeIn" v-if="goal.goalFinalReflection === ''">
           <h6>Final Reflection</h6>
           <form v-on:submit.prevent="saveFinalReflection">
             <label for="reflection">How have the actions helped you improve this part of your teaching?</label>
@@ -176,7 +176,7 @@ export default {
 #new-goal h1 {
   width: 100%;
   height: 3vh;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin-top: .8rem;
   text-align: center;
 }
@@ -388,5 +388,19 @@ p {
   color: black;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
 
 </style>

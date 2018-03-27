@@ -2,8 +2,8 @@
   <div id="template">
     <Header />
     <Menu />
-    <div id="template-view">
-      <aside>
+    <div id="template-view" class="fadeIn">
+      <aside >
         <h1> Design Your Template </h1>
         <div id="template-steps">
           <img class="checkboxes" v-if="templateStep === 1" src="../../static/checkbox.png" />
@@ -158,10 +158,10 @@ aside h1 {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s ease-out;
+  transition: opacity 1s ease-out;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter, .fade-leave {
   opacity: 0;
 }
 
@@ -196,6 +196,21 @@ aside h1 {
 .tada {
   animation-name: tada;
   animation-duration: 2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 1s;
 }
 
 </style>

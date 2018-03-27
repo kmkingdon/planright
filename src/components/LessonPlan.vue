@@ -2,7 +2,7 @@
   <div id="lesson-plan">
     <Header />
     <Menu />
-    <div id="lesson-plan-menu">
+    <div id="lesson-plan-menu" class="fadeIn">
       <div id="toggle">
         <button v-on:click="(newLesson = true) && (oldLesson = false)">New Lesson</button>
         <button v-on:click="(oldLesson = true) && (newLesson = false)">Edit Lesson</button>
@@ -52,7 +52,7 @@
         </form>
       </div>
     </div>
-    <div v-if="newLesson" class="lesson-plan-template">
+    <div v-if="newLesson" class="lesson-plan-template fadeIn">
       <div class="date">
         <h2>What date will you teach this lesson?</h2>
         <input v-model="dateTaught" type="date"/>
@@ -60,17 +60,17 @@
       <div class="standards-selected">
         <h2>Standards:</h2>
         <ul>
-          <li v-for="standard in standardsData.selectedStandards">
+          <li v-for="standard in standardsData.selectedStandards" class="fadeIn">
             <h3>{{standard.description}}</h3>
             <h4>{{standard.statementNotation}}</h4>
             <button :id="standard.id" v-on:click="deleteStandard">X</button>
           </li>
         </ul>
       </div>
-      <div id="template" v-for="template in lessonTemplates" v-if="template.id === templateData.templateId" v-html="template.lessonTemplateString" >
+      <div id="template" class="fadeIn" v-for="template in lessonTemplates" v-if="template.id === templateData.templateId" v-html="template.lessonTemplateString" >
       </div>
     </div>
-    <div v-if="oldLesson" class="lesson-plan-template">
+    <div v-if="oldLesson" class="lesson-plan-template fadeIn">
       <div class="date">
         <h2>What date will you teach this lesson?</h2>
         <input v-model="oldLessonData.dateTaught" type="date"/>
@@ -81,21 +81,21 @@
           <button v-on:click="clearOldStandards">Clear Old Standards</button>
         </div>
         <ul>
-          <li v-for="(value, key) in oldLessonData.standardsObject">
+          <li v-for="(value, key) in oldLessonData.standardsObject" class="fadeIn">
             <h3>{{value}}</h3>
             <h4>{{key}}</h4>
           </li>
-          <li v-for="standard in standardsData.selectedStandards">
+          <li v-for="standard in standardsData.selectedStandards" class="fadeIn">
             <h3>{{standard.description}}</h3>
             <h4>{{standard.statementNotation}}</h4>
             <button :id="standard.id" v-on:click="deleteStandard">X</button>
           </li>
         </ul>
       </div>
-      <div id="template-old" v-html="oldLessonData.lessonTemplateString" >
+      <div id="template-old" v-html="oldLessonData.lessonTemplateString" class="fadeIn" >
       </div>
     </div>
-    <div id="standards-menu">
+    <div id="standards-menu" class="fadeIn">
         <h1>Import Your Standards:</h1>
         <h2>What strand of standards?</h2>
         <select v-model="standardsData.strand">
@@ -513,7 +513,7 @@ p {
 
 #template {
   width: 100%;
-  height: 49vh;
+  height: 45vh;
   overflow: scroll;
 }
 
@@ -609,5 +609,20 @@ p {
   height: 1.5rem;
   font-size: 0.8rem;
   margin-top: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 1s;
 }
 </style>

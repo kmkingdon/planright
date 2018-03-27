@@ -11,6 +11,7 @@
             <div id="component-select-inner">
               <img v-for="avatar in avatars" :id="avatar" :src=avatar v-bind:class="{active:(userData.avatar === avatar)}" v-on:click="selectAvatar" />
             </div>
+            <button v-on:click="updateAvatar">Save Avatar</button>
           </div>
         </div>
       </div>
@@ -36,6 +37,7 @@ export default {
   ]),
   methods: {
     ... mapActions([
+      'updateAvatar'
   ]),
     selectAvatar(event) {
       this.userData.avatar= event.target.id;

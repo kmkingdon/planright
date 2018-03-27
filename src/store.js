@@ -134,6 +134,10 @@ const mutations = {
       state.settingsView = false;
     }
   },
+  saveUserPreferences(state, res) {
+    const avatarLink = res.preferences.filter(preference => preference.users_id === state.userData.userId);
+    state.userData.avatar = avatarLink[0].avatar;
+  },
   setError(state, error){
     state.userData.warning = error;
   },
@@ -421,6 +425,17 @@ const mutations = {
 
 const actions = {
   //  Authorization and Account Management
+  getUserPreferences({ commit }) {
+    const token = localStorage.getItem('token');
+    fetch('https://planrightdb.herokuapp.com/user_preferences', {
+      method: 'GET',
+      headers: new Headers ({
+        Authorization: `Bearer ${token}`
+      })
+    })
+      .then(res => res.json())
+      .then(res => commit('saveUserPreferences', res));
+  },
   login: ({ commit, state }) => {
     const loginObject = {
       email: state.loginData.email,
@@ -467,6 +482,21 @@ const actions = {
           state.modalSignUp.show = false;
         }
       })
+  },
+  updateAvatar: ({ commit, state }) => {
+    const token = localStorage.getItem('token');
+    const putAPI = `https://planrightdb.herokuapp.com/user_preferences/${state.userData.userId}`;
+
+    let avatarObject = {
+       avatar : state.userData.avatar,
+    }
+    console.log(avatarObject)
+    fetch(putAPI, {
+      method: 'PUT',
+      headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
+      body: JSON.stringify(avatarObject),
+    })
+      .then(res => res.json())
   },
   //  Lesson Template
   addLessonComponent: ({ commit, state }) => {

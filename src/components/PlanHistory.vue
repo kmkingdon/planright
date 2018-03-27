@@ -2,7 +2,7 @@
   <div id="plan-history">
     <Header />
     <Menu />
-    <div id="history-menu">
+    <div id="history-menu" class="fadeIn">
       <h2>Select a Folder:</h2>
       <form>
         <select v-model="lessonHistory.selectedFolder" name="templates">
@@ -12,7 +12,7 @@
       </form>
       <div id="lessons">
         <div id="lessons-inner">
-          <div v-for="lesson in lessonPlans" v-if="lesson.fileName === lessonHistory.selectedFolder" class="lesson-icon">
+          <div v-for="lesson in lessonPlans" v-if="lesson.fileName === lessonHistory.selectedFolder" class="lesson-icon fadeIn">
             <img v-on:click="selectLesson" :id="lesson.id" src="../../static/lesson.png" alt="lessonicon"/>
             <small>{{lesson.name}}</small>
           </div>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div id="lesson-display">
-      <div v-for="lesson in lessonPlans" v-if="lesson.id == lessonHistory.selectedLesson" id="lesson-display-inner">
+      <div v-for="lesson in lessonPlans" v-if="lesson.id == lessonHistory.selectedLesson" id="lesson-display-inner" class="fadeIn">
         <h1>{{lesson.name}}</h1>
         <h2>Date Taught:{{lesson.dateTaught | formatDate}}</h2>
         <ul id="standards-view">
@@ -66,7 +66,7 @@
         </div>
       </div>
     </div>
-    <div id="lesson-menu">
+    <div id="lesson-menu" class="fadeIn">
       <h2>Export as PDF:</h2>
       <button v-on:click.prevent="createPDF" >Export Now</button>
       <h2>Add a Goal Reflection to Lesson Plan:</h2>
@@ -123,6 +123,7 @@ export default {
       'addLessonReflection',
     ]),
     selectLesson(event){
+      this.lessonHistory.reflectionAdded = false;
       this.$store.dispatch('selectLesson', event)
     },
     createPDF () {
@@ -497,5 +498,38 @@ export default {
   padding: 1rem 1rem;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse {
+  animation-name: pulse;
+  animation-duration: 1s;
+}
 
 </style>

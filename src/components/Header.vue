@@ -1,7 +1,7 @@
 <template>
   <header>
-    <img id="logo" src="../../static/planrightlogo.png" alt="simple-logo"/>
-    <div v-if="settingsView" id="setting-menu">
+    <router-link id="logo" to="/dashboard"><img  src="../../static/planrightlogo.png" alt="simple-logo"/></router-link>
+    <div v-if="settingsView" id="setting-menu" class="slideInRight">
       <h1>Welcome {{userName}}</h1>
       <h2> Account Settings </h2>
       <h3 v-on:click="modaledit.show = true"> Change Avatar </h3>
@@ -40,6 +40,7 @@ export default {
     ...mapActions([
       'openSettings',
       'logout',
+      'getUserPreferences'
     ]),
     getTokenInfo() {
       let token = localStorage.getItem('token');
@@ -49,6 +50,7 @@ export default {
   },
   mounted(){
     this.getTokenInfo();
+    this.getUserPreferences();
   }
 };
 </script>
@@ -69,7 +71,10 @@ header{
   grid-column: 1/2;
   justify-self: center;
   align-self: center;
-  height: 90%;
+}
+
+#logo img {
+  height: 18vh;
   -webkit-filter: drop-shadow(1px 1px 0 #AFADB3)
                   drop-shadow(-1px -1px 0 #AFADB3);
   filter: drop-shadow(1px 1px 0 #AFADB3)
@@ -79,15 +84,16 @@ header{
 #account-info {
   grid-row: 1/2;
   grid-column: 3/4;
+  justify-self: center;
+  align-self: center;
   display: flex;
   flex-flow: row;
-  justify-content: flex-start;
-  padding-left: .5rem;
+  justify-content: center;
   align-items: center;
 }
 
 #avatar {
-  height: 60%;
+  height: 15vh;
   -webkit-filter: drop-shadow(1px 1px 0 #D09400)
                   drop-shadow(-1px -1px 0 #D09400);
   filter: drop-shadow(1px 1px 0 #D09400)
@@ -95,8 +101,8 @@ header{
 }
 
 #settings {
-  margin-right: 1rem;
-  height: 30%;
+  height: 8vh;
+  padding-right: .5rem;
   cursor: pointer;
 }
 
@@ -146,6 +152,7 @@ header{
   grid-column: 1/2;
   justify-self: center;
   align-self: center;
+  font-size: 1.2rem;
   color: white;
   cursor: pointer;
 }
@@ -155,6 +162,7 @@ header{
   grid-column: 2/3;
   justify-self: center;
   align-self: center;
+  font-size: 1.2rem;
   color: white;
   cursor: pointer;
 }
@@ -164,9 +172,25 @@ header{
   grid-column: 3/4;
   justify-self: center;
   align-self: center;
+  font-size: 1.2rem;
   color: white;
   cursor: pointer;
 }
 
 
+@keyframes slideInRight {
+  from {
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slideInRight {
+  animation-name: slideInRight;
+  animation-duration: 1s;
+}
 </style>
