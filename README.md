@@ -9,20 +9,23 @@ https://github.com/kmkingdon/planright/wiki
 # Project description
 ## Create Templates:
 Teachers can create reusable templates that include standards, customizable lesson components, and custom order.
-
+![lessontemplate](https://user-images.githubusercontent.com/32685092/37997827-885e0a10-31d9-11e8-85b8-a1c590e46e7b.gif)
 
 ## New Lessons:
 Teachers can use the templates to save new lessons.
+![newlesson](https://user-images.githubusercontent.com/32685092/37997837-922e1bd4-31d9-11e8-936c-61d6bc05d752.gif)
 
 ## Edit Old Lessons:
 Teachers can open up old lessons and edit them.
+![edit](https://user-images.githubusercontent.com/32685092/37997858-a063f188-31d9-11e8-86b7-a048563e5847.gif)
 
 ## View Lesson Plan History:
 Teachers can open up old lesson plans, view them, export them as PDF and add reflections to each lesson based on their goal.
+![lessonhistory](https://user-images.githubusercontent.com/32685092/37997882-b1b37422-31d9-11e8-9cd6-65e26bacf2cc.gif)
 
 ## Create Goals:
 Teachers can create a goal focusing on one part of their lesson planning that they want to improve.
-
+![goal](https://user-images.githubusercontent.com/32685092/37997892-bb7ce3b2-31d9-11e8-98a4-2beb0b7bbc24.gif)
 
 # Installation
 After forking and cloning this repo:
