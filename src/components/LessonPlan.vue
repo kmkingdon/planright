@@ -150,6 +150,7 @@ export default {
     "updateLessonConfirm",
     "deleteTemplateModal",
     "templateData",
+    "userData"
   ]),
   methods: {
     ...mapActions([
@@ -195,7 +196,7 @@ export default {
         fileName: this.templateData.selectedFolder,
         teacherReflection: {},
         coachCommentString: "",
-        users_id: 1
+        users_id: this.userData.userId,
       };
       this.$store.dispatch("saveLessonPlan", lessonPlan);
     },

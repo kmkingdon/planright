@@ -8,21 +8,25 @@
         <input v-model="loginData.email" type="text" name="username"/>
         <label class="labels" for="password"> Password </label>
         <input v-model="loginData.password" type="password" name="password"/>
-        <input type="submit" value="Login" />
+        <input id="login-submit" type="submit" value="Login" />
         <p>{{userData.warning}}</p>
+        <h3 v-on:click="modalSignUp.show = true">Sign Up for an Account</h3>
       </form>
     </div>
+    <ModalSignUp v-if="modalSignUp.show"  @close="modalSignUp.show = false" />
   </div>
 </template>
 
 <script>
 import Header from '@/components/Header';
 import { mapGetters, mapActions } from 'vuex'
+import ModalSignUp from "@/components/ModalSignUp";
 
 export default {
   name: 'Home',
   components: {
     Header,
+    ModalSignUp,
   },
   data() {
     return {
@@ -30,7 +34,8 @@ export default {
   },
   computed: mapGetters([
     'loginData',
-    'userData'
+    'userData',
+    'modalSignUp'
   ]),
   methods: mapActions([
     'login'
@@ -56,20 +61,22 @@ export default {
   width: 100%;
   height: 100%;
   justify-self: center;
-  align-self: end;
+  align-self: center;
   display: flex;
   flex-flow: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
 #login form {
   display: flex;
   flex-flow: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 60%;
+  height: 90%;
   background-color: rgba(255,255,255,.5);
+  margin-top: 2rem;
 }
 
 #login h2 {
@@ -86,18 +93,19 @@ export default {
 }
 
 #login form input {
-  width: 90%;
+  width: 80%;
+  height: 2rem;
   font-size: 1rem;
-  margin-bottom: 2rem;
+  margin: .4rem 0rem 1rem 0rem;
 }
 
 #login-submit {
-  width: 50%;
+  width: 50% !important;
   height: 2rem;
   background-color: #D09400;
   color: white;
-  border: solid black 1px;
-  border-radius: 5px;
+  border: solid #120832 1px;
+  border-radius: 10px;
   margin-bottom: 2rem;
   display: flex;
   flex-flow: column;
@@ -105,5 +113,22 @@ export default {
   align-items: center;
   font-size: 1.3rem;
   text-decoration: none;
+}
+#login form p {
+  margin-bottom: -1rem;
+  height: 1rem;
+  font-size: 1rem;
+  color: #D09400;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
+}
+
+#login form h3 {
+  margin-top: 3rem;
+  font-size: 1.3rem;
+  color: #120832;
 }
 </style>

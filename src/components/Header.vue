@@ -4,23 +4,28 @@
     <div v-if="settingsView" id="setting-menu">
       <h1>Welcome {{userName}}</h1>
       <h2> Account Settings </h2>
-      <h3> Edit Account </h3>
+      <h3 v-on:click="modaledit.show"> Edit Account </h3>
       <h4> Add Coach </h4>
-      <h5> Logout </h5>
+      <h5 v-on:click="logout"> Logout </h5>
     </div>
     <div v-if="userData.userId !== 0" id="account-info">
       <img @click="openSettings" id="settings" src="../../static/arrow.png" alt="simple-logo"/>
-      <img id="avatar" src="../../static/avatar.jpg" alt="simple-logo"/>
+      <img id="avatar" :src="userData.avatar" alt="simple-logo"/>
     </div>
+    <ModalEditAccount v-if="modaledit.show"  @close="modaledit.show = false" />
   </header>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ModalEditAccount from "@/components/ModalEditAccount";
 import decode from 'jwt-decode';
 
 export default {
   name: 'Header',
+  components: {
+    ModalEditAccount
+  },
   data() {
     return {
       userName : '',
@@ -28,11 +33,13 @@ export default {
   },
   computed: mapGetters([
     'userData',
-    'settingsView'
+    'settingsView',
+    'modaledit'
   ]),
   methods:{
     ...mapActions([
-      'openSettings'
+      'openSettings',
+      'logout',
     ]),
     getTokenInfo() {
       let token = localStorage.getItem('token');
@@ -112,18 +119,26 @@ header{
   grid-column: 1/end;
   justify-self: center;
   align-self: center;
-  color: white;
+  font-size: 1.5rem;
+  font-family: 'Nanum+Myeongjo';
+  color: #D09400;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
+  font-weight: bold;
+  margin-top: .3rem;
 }
 
 #setting-menu h2 {
   grid-row: 2/3;
   grid-column: 1/end;
   font-family: 'Nanum+Myeongjo';
-  color: white;
+  color: #120832;
   justify-self: center;
-  align-self: center;
-  font-size: 1.4rem;
-  font-weight: bold;
+  align-self: end;
+  font-size: 1.3rem;
 }
 
 #setting-menu h3 {
@@ -131,7 +146,8 @@ header{
   grid-column: 1/2;
   justify-self: center;
   align-self: center;
-  color: #120832;
+  color: white;
+  cursor: pointer;
 }
 
 #setting-menu h4 {
@@ -139,7 +155,8 @@ header{
   grid-column: 2/3;
   justify-self: center;
   align-self: center;
-  color: #120832;
+  color: white;
+  cursor: pointer;
 }
 
 #setting-menu h5 {
@@ -147,7 +164,8 @@ header{
   grid-column: 3/4;
   justify-self: center;
   align-self: center;
-  color: #120832;
+  color: white;
+  cursor: pointer;
 }
 
 

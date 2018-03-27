@@ -9,11 +9,26 @@ const state = {
     email: '',
     password: '',
   },
+  modaledit: {
+    show: false,
+  },
+  modalSignUp: {
+    show: false,
+  },
   userData: {
     userId: 0,
+    userName: '',
     warning: '',
+    avatar: '../../static/0.png',
   },
   settingsView: false,
+  signUpData: {
+    warning: '',
+    username: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+  },
   //  Application data
   goals: [],
   folders: [],
@@ -106,7 +121,12 @@ const state = {
 
 const mutations = {
   //  Authorization and Account Managment
-
+  logout(state) {
+    state.userData.userId = 0;
+    state.settingsView= false,
+    localStorage.clear();
+    router.push({ path: '/' })
+  },
   openSettings(state) {
     if (state.settingsView === false) {
       state.settingsView = true;
@@ -117,7 +137,14 @@ const mutations = {
   setError(state, error){
     state.userData.warning = error;
   },
-  updateUserData(state, res){
+  setErrorSignup(state, error){
+    state.signUpData.warning = error;
+  },
+  updateUserData(state, res) {
+    state.loginData = {
+      email: '',
+      password: '',
+    };
     state.userData.userId = res;
   },
   //  Lesson Template
@@ -146,10 +173,12 @@ const mutations = {
     state.standardsSelected = { standardsSet: '', gradeLevel: '' };
   },
   saveComponents(state, res) {
-    state.lessonComponents = res.components;
+    const savedComponents = res.components.filter(component => component.users_id === 1 || component.users_id === state.userData.userId)
+    state.lessonComponents = savedComponents;
   },
   saveLessonTemplates(state, res) {
-    state.lessonTemplates = res.templates;
+    const savedTemplates = res.templates.filter(template => template.users_id === state.userData.userId);
+    state.lessonTemplates = savedTemplates;
   },
   saveOrder(state, { oldIndex, newIndex }) {
     const categories = state.arrangeComponentArray.slice();
@@ -232,7 +261,8 @@ const mutations = {
     }, 3000);
   },
   saveLessonPlans(state, res) {
-    state.lessonPlans = res.plans;
+    const savedLessons = res.plans.filter(plan => plan.users_id === state.userData.userId);
+    state.lessonPlans = savedLessons;
   },
   saveStandards(state, res) {
     const standardsArray = Object.values(res.data.standards);
@@ -246,7 +276,9 @@ const mutations = {
       }
     });
     state.lessonTemplates.splice(index, 1);
-    state.deleteTemplateModal = false;
+    state.deleteTemplateModal = {
+      show: false
+    };
     state.templateData.templateId = 0;
   },
   updateLessonPlans(state, res) {
@@ -329,7 +361,8 @@ const mutations = {
   },
   //  Goals
   saveGoals(state, res) {
-    state.goals = res.goals;
+    const savedGoals = res.goals.filter(goal => goal.users_id === state.userData.userId);
+    state.goals = savedGoals;
   },
   selectGoal(state) {
     state.goalData.id = 0;
@@ -405,7 +438,31 @@ const actions = {
         }
       })
   },
+  logout: ({ commit }) => commit('logout'),
   openSettings: ({ commit }) => commit('openSettings'),
+  signUp: ({ commit, state }) => {
+    const signupObject = {
+      username: state.signUpData.username,
+      email: state.signUpData.email,
+      password: state.signUpData.password,
+      teacherAccount: true,
+      coachAccount: false,
+    };
+
+    fetch('https://planrightdb.herokuapp.com/signup', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(signupObject),
+    })
+      .then(res => res.json())
+      .then((response) => {
+        if (response.error) {
+          commit('setErrorSignup', response.error);
+        } else {
+          state.modalSignUp.show = false;
+        }
+      })
+  },
   //  Lesson Template
   addLessonComponent: ({ commit, state }) => {
     const token = localStorage.getItem('token');
@@ -414,7 +471,7 @@ const actions = {
       name: state.addModal.name,
       order: 0,
       fixed: false,
-      users_id: 1,
+      users_id: state.userData.userId,
     }
     fetch('https://planrightdb.herokuapp.com/components', {
       method: 'POST',
@@ -486,7 +543,7 @@ const actions = {
       name: nameString,
       standards: standardsObject,
       lessonTemplateString: templateString,
-      users_id: 1,
+      users_id: state.userData.userId,
     };
     const token = localStorage.getItem('token');
     fetch('https://planrightdb.herokuapp.com/lessontemplates', {
@@ -734,7 +791,7 @@ const actions = {
       goalData: { Strengths:state.goalData.strengths, Improvements:state.goalData.improve, Actions:state.goalData.actions},
       goalFinalReflection: '',
       coachCommentString: '',
-      users_id: 1,
+      users_id: state.userData.userId,
     };
     fetch('https://planrightdb.herokuapp.com/goals', {
       method: 'POST',
@@ -799,6 +856,9 @@ const getters = {
   deleteGoalModal: state => state.deleteGoalModal,
   loginData: state => state.loginData,
   userData: state => state.userData,
+  modalSignUp: state => state.modalSignUp,
+  signUpData: state => state.signUpData,
+  modaledit: state => state.modaledit,
 };
 
 
