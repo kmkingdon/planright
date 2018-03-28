@@ -1,5 +1,6 @@
 <template>
   <div id="lesson-plan">
+    <LoginValidator/>
     <Header />
     <Menu />
     <div id="lesson-plan-menu" class="fadeIn">
@@ -123,6 +124,7 @@ import { mapGetters, mapActions } from "vuex";
 import Header from "@/components/Header";
 import Menu from "@/components/Menu";
 import ModalDeleteTemplate from "@/components/ModalDeleteTemplate";
+import LoginValidator from '@/components/LoginValidator';
 
 export default {
   name: "LessonPlan",
@@ -130,6 +132,7 @@ export default {
     Header,
     Menu,
     ModalDeleteTemplate,
+    LoginValidator,
   },
   data() {
     return {

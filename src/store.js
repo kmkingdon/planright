@@ -332,15 +332,14 @@ const mutations = {
     state.lessonHistory.selectedLesson = event.target.id;
   },
   updateDeleteLesson(state) {
-    let index;
-    state.lessonPlans.forEach((plan, i) => {
-      if (plan.id === state.lessonHistory.selectedLesson) {
-        index = i;
-      }
-    });
+    let lessonPlans = state.lessonPlans;
+    let lesson = lessonPlans.filter(plan => plan.id == state.lessonHistory.selectedLesson)
+    let index= lessonPlans.indexOf(lesson[0])
     state.lessonPlans.splice(index, 1);
-    state.deleteLessonModal = false;
-    state.lessonHistory.selectedLesson = 0;
+    state.deleteLessonModal.show = false;
+    setTimeout(() => {
+      state.lessonHistory.selectedLesson = 0;
+    },1000);
   },
   updateLessonPlansEdit(state, res) {
     state.updateLessonConfirm = true;

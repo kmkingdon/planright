@@ -1,5 +1,6 @@
 <template>
   <div id="template">
+    <LoginValidator />
     <Header />
     <Menu />
     <div id="template-view" class="fadeIn">
@@ -55,6 +56,8 @@ import Components from '@/components/Templates/Components';
 import Arrange from '@/components/Templates/Arrange';
 import DropDowns from '@/components/Templates/DropDowns';
 import SaveTemplate from '@/components/Templates/SaveTemplate';
+import LoginValidator from '@/components/LoginValidator';
+
 
 export default {
   name: 'Template',
@@ -66,6 +69,7 @@ export default {
     Arrange,
     DropDowns,
     SaveTemplate,
+    LoginValidator,
   },
   data() {
     return {

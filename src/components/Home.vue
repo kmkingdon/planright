@@ -15,8 +15,8 @@
     </div>
     <div class="about" id="templates">
       <h3>CUSTOM TEMPLATES</h3>
-      <img class="fadeIn" v-on:click="show.template = true" src="../../static/template.png" v-if="!show.template"/>
-      <ul class="fadeIn" v-on:click="show.template = false" v-if="show.template">
+      <img class="fadeIn" v-on:mouseover="show.template = true" src="../../static/template.png" v-if="!show.template"/>
+      <ul class="fadeIn" v-on:mouseout="show.template = false" v-if="show.template">
         <li>Create custom lesson plan templates</li>
         <li>Include Common Core and Next Generation Science Standards</li>
         <li>Customize lesson plan component order, drop-down menus, and permanent filled areas.</li>
@@ -24,8 +24,8 @@
     </div>
     <div class="about" id="make">
       <h3>MAKE/EDIT LESSONS</h3>
-      <img class="fadeIn" v-on:click="show.make = true" src="../../static/make.png" v-if="!show.make"/>
-      <ul class="fadeIn" v-on:click="show.make = false" v-if="show.make">
+      <img class="fadeIn" v-on:mouseover="show.make = true" src="../../static/make.png" v-if="!show.make"/>
+      <ul class="fadeIn" v-on:mouseout="show.make = false" v-if="show.make">
         <li>Use custom templates to create new lesson plans</li>
         <li>Open old lesson plans to add changes</li>
         <li>Organize lessons in folders for easy access</li>
@@ -33,8 +33,8 @@
     </div>
     <div class="about" id="history">
       <h3>LESSON HISTORY</h3>
-      <img class="fadeIn" v-on:click="show.history = true" src="../../static/history.png" v-if="!show.history"/>
-      <ul class="fadeIn" v-on:click="show.history = false" v-if="show.history">
+      <img class="fadeIn" v-on:mouseover="show.history = true" src="../../static/history.png" v-if="!show.history"/>
+      <ul class="fadeIn" v-on:mouseout="show.history = false" v-if="show.history">
         <li>View old lesson plans with easy organization</li>
         <li>Add reflections based on your instructional goals to each lesson</li>
         <li>Export each lesson as a PDF</li>
@@ -42,8 +42,8 @@
     </div>
     <div class="about" id="goal">
       <h3>REFLECT & GOAL SET</h3>
-      <img class="fadeIn" v-on:click="show.goal = true" src="../../static/goal.png" v-if="!show.goal"/>
-      <ul class="fadeIn" v-on:click="show.goal = false" v-if="show.goal">
+      <img class="fadeIn" v-on:mouseover="show.goal = true" src="../../static/goal.png" v-if="!show.goal"/>
+      <ul class="fadeIn" v-on:mouseout="show.goal = false" v-if="show.goal">
         <li>Create an instructional goal that focuses on one component of your lesson plan</li>
         <li>Use the goal to reflect on your practice in each lesson</li>
         <li>Make a final reflection at the end of your coaching cycle</li>
@@ -262,6 +262,6 @@ export default {
 
 .fadeInSlow {
   animation-name: fadeIn;
-  animation-duration: 8s;
+  animation-duration: 6s;
 }
 </style>

@@ -59,6 +59,6 @@ export default {
 
 .fadeInSlow {
   animation-name: fadeIn;
-  animation-duration: 8s;
+  animation-duration: 6s;
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div id="plan-history">
+    <LoginValidator />
     <Header />
     <Menu />
     <div id="history-menu" class="fadeIn">
@@ -89,6 +90,7 @@ import { mapGetters, mapActions } from 'vuex';
 import Header from '@/components/Header';
 import Menu from '@/components/Menu';
 import ModalDeleteLesson from '@/components/ModalDeleteLesson';
+import LoginValidator from '@/components/LoginValidator';
 import jsPDF  from "jspdf";
 import moment from 'moment';
 
@@ -98,6 +100,7 @@ export default {
     Header,
     Menu,
     ModalDeleteLesson,
+    LoginValidator
   },
   data() {
     return {

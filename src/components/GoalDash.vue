@@ -1,5 +1,6 @@
 <template>
   <div id="goal-dashboard">
+    <LoginValidator/>
     <Header />
     <Menu />
     <div id="goal-menu" class="fadeIn">
@@ -70,6 +71,7 @@ import { mapGetters, mapActions } from 'vuex';
 import Header from '@/components/Header';
 import Menu from '@/components/Menu';
 import ModalDeleteGoal from "@/components/ModalDeleteGoal";
+import LoginValidator from '@/components/LoginValidator';
 
 
 export default {
@@ -78,6 +80,7 @@ export default {
     Header,
     Menu,
     ModalDeleteGoal,
+    LoginValidator,
   },
   data() {
     return {
