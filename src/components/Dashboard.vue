@@ -2,7 +2,7 @@
   <div id="dashboard">
     <Header />
     <Menu />
-    <div id="current-view">
+    <div id="current-view" class="fadeInSlow">
     </div>
   </div>
 </template>
@@ -45,5 +45,20 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeInSlow {
+  animation-name: fadeIn;
+  animation-duration: 8s;
 }
 </style>

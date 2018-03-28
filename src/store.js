@@ -121,6 +121,9 @@ const state = {
 
 const mutations = {
   //  Authorization and Account Managment
+  closeAvatarModal(state) {
+    state.modaledit.show = false;
+  },
   logout(state) {
     state.userData.userId = 0;
     state.settingsView= false,
@@ -293,6 +296,9 @@ const mutations = {
   updateLessonPlans(state, res) {
     state.saveLessonConfirm = true;
     state.lessonPlans.push(res.plans);
+    state.templateData.templateId = 0;
+    state.standardsData.selectedStandards = [];
+    state.names.lessonName = '';
     setTimeout(() => {
       state.saveLessonConfirm = false;
     }, 5000);
@@ -387,7 +393,7 @@ const mutations = {
       }
     });
     state.goals.splice(index, 1);
-    state.deleteGoalModal = false;
+    state.deleteGoalModal.show = false;
     state.goalData.id = -1;
   },
   updateGoals(state, res) {
@@ -395,6 +401,7 @@ const mutations = {
     state.goals.push(res.goals);
     state.goalData = {
       component: 0,
+      id:res.goals.id,
       strengths: '',
       improve: '',
       actions: '',
@@ -490,13 +497,14 @@ const actions = {
     let avatarObject = {
        avatar : state.userData.avatar,
     }
-    console.log(avatarObject)
+
     fetch(putAPI, {
       method: 'PUT',
       headers: new Headers({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }),
       body: JSON.stringify(avatarObject),
     })
       .then(res => res.json())
+      .then(commit('closeAvatarModal'))
   },
   //  Lesson Template
   addLessonComponent: ({ commit, state }) => {
@@ -580,6 +588,7 @@ const actions = {
       lessonTemplateString: templateString,
       users_id: state.userData.userId,
     };
+
     const token = localStorage.getItem('token');
     fetch('https://planrightdb.herokuapp.com/lessontemplates', {
       method: 'POST',

@@ -8,8 +8,8 @@
          </div>
         </draggable>
         <div id="save">
-          <p v-if="arrangeConfirm"> Order Saved!</p>
           <button v-on:click="saveOrderFinal" >Save Order</button>
+          <p v-if="arrangeConfirm"> Order Saved!</p>
         </div>
       </div>
       <img v-on:click="restartTemplate" id="restart" src="../../../static/restart.png" alt="restart"/>
@@ -161,7 +161,14 @@ export default {
 
 #save p {
   color: #D09400;
-  margin-bottom: .5rem;
+  height: 1rem;
+  margin-top: -2rem;
+  padding-bottom: 2rem;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
 }
 
 #drag-container{

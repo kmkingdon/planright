@@ -50,16 +50,16 @@
           <div id="goal-review" v-for="goal in goals" v-if="goal.id === lessonHistory.reflectionGoal">
             <h6 >Your Goal:<br/> {{goal.name}} </h6>
             <h6 v-for="lesson in lessonComponents" v-if="lesson.id === goal.componentId">Lesson Component:<br/>{{lesson.name}}</h6>
-            <p>You want to improve: <br/><br/>{{goal.goalData.Improve}} </p>
+            <p>You want to improve: <br/><br/>{{goal.goalData.Improvements}} </p>
             <p>You commited to the following actions: <br/><br/>{{goal.goalData.Actions}} </p>
           </div>
           <form v-on:submit.prevent="addLessonReflection">
             <label for="actions">Describe how you did your goal actions in this lesson:</label>
-            <input  required v-model="lessonReflection.actions" type="text" name="actions" >
+            <textarea  required v-model="lessonReflection.actions" type="text" name="actions" ></textarea>
             <label for="progress">What was successful with those actions in this lesson?</label>
-            <input  required v-model="lessonReflection.progress" type="text" name="progress" >
+            <textarea  required v-model="lessonReflection.progress" type="text" name="progress" ></textarea>
             <label for="improve">What would your like to improve next time you work on this lesson component after this lesson?</label>
-            <input  required v-model="lessonReflection.improve" type="text" name="improve" >
+            <textarea  required v-model="lessonReflection.improve" type="text" name="improve" ></textarea>
             <input id="save-reflection" type="submit" value="Save Reflection"/>
             <p id="reflection-confirm" v-if="saveLessonReflectionConfirm">Reflection Added!</p>
           </form>
@@ -72,7 +72,7 @@
       <h2>Add a Goal Reflection to Lesson Plan:</h2>
       <h3>Pick the goal:</h3>
       <select v-model="lessonHistory.reflectionGoal">
-        <option value="">Select a Goal</option>
+        <option value="" >Select a Goal</option>
         <option v-for="goal in goals" :value="goal.id">{{goal.name}}</option>
       </select>
       <button v-on:click="addReflection">Add Reflection</button>
@@ -356,7 +356,7 @@ export default {
 }
 
 #lesson-menu h2 {
-  margin: 2rem .5rem .5rem .5rem;
+  margin: 2.5rem .5rem .5rem .5rem;
   font-size: 1.4rem;
   text-align: center;
 }
@@ -387,9 +387,15 @@ export default {
 #warning {
   width: 80%;
   font-size: 1rem;
-  color: white;
+  height: 3rem;
+  margin-bottom: -3rem;
   text-align: center;
-  padding: .5rem;
+  color: #D09400;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
 }
 
 #lesson-reflection {
@@ -445,19 +451,19 @@ export default {
   padding: .8rem 0rem;
 }
 
-#lesson-reflection input {
+#lesson-reflection textarea {
   width: 90%;
-  height: 1.5rem;
-  font-size: 1rem;
+  height: 3rem;
+  font-size: .8rem;
   padding-bottom: .4rem;
   border: solid #AFADB3 1px;
 }
 
 #save-reflection {
-  width: 30% !important;
-  height: 2rem !important;
+  width: 30% ;
+  height: 2rem ;
   color: white;
-  font-size: 1.3rem !important;
+  font-size: 1.3rem ;
   margin: 1rem 0rem 1rem 0rem;
   background-color: #D09400;
   border: solid #120832 1px;

@@ -11,8 +11,8 @@
             <div id="component-select-inner">
               <img v-for="avatar in avatars" :id="avatar" :src=avatar v-bind:class="{active:(userData.avatar === avatar)}" v-on:click="selectAvatar" />
             </div>
-            <button v-on:click="updateAvatar">Save Avatar</button>
           </div>
+          <button  id="save-avatar" v-on:click="updateAvatar">Save Avatar</button>
         </div>
       </div>
     </div>
@@ -76,7 +76,7 @@ export default {
   border-radius: 2px;
   transition: all .3s ease;
   display: grid;
-  grid-template-rows: 5% 20% 75%;
+  grid-template-rows: 5% 20% 45% 25%;
   grid-template-columns: 90% 10%;
 }
 

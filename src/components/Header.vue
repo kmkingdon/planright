@@ -8,6 +8,9 @@
       <h4> Add Coach </h4>
       <h5 v-on:click="logout"> Logout </h5>
     </div>
+    <div v-if="userData.userId === 0" id="hook" class="slideInRightSlow">
+      <h1>Lesson Planning Made Easy</h1>
+    </div>
     <div v-if="userData.userId !== 0" id="account-info">
       <img @click="openSettings" id="settings" src="../../static/arrow.png" alt="simple-logo"/>
       <img id="avatar" :src="userData.avatar" alt="simple-logo"/>
@@ -90,6 +93,22 @@ header{
   flex-flow: row;
   justify-content: center;
   align-items: center;
+}
+
+#hook {
+  grid-row: 1/2;
+  grid-column: 2/4;
+  justify-self: start;
+  align-self: center;
+  color: white;
+  font-size: 4rem;
+  font-family: 'Nanum+Myeongjo';
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
+
 }
 
 #avatar {
@@ -192,5 +211,10 @@ header{
 .slideInRight {
   animation-name: slideInRight;
   animation-duration: 1s;
+}
+
+.slideInRightSlow {
+  animation-name: slideInRight;
+  animation-duration: 3s;
 }
 </style>

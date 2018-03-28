@@ -27,15 +27,14 @@
         <h3 v-for="component in lessonComponents" v-if="component.id == goalData.component">Your Goal Will Focus On: {{component.name}}</h3>
         <form v-on:submit.prevent="postGoal">
           <label for="name">What would you like to name this goal?</label>
-          <input required v-model="goalData.name" type="text" name="name" >
+          <textarea required v-model="goalData.name" type="text" name="name" ></textarea>
           <label for="strengths">What are your strengths with this part of your lesson plan?</label>
-          <input  required v-model="goalData.strengths" type="text" name="strengths" >
+          <textarea  required v-model="goalData.strengths" type="text" name="strengths" ></textarea>
           <label for="improve">What would your like to improve in this part of your lesson plan?</label>
-          <input  required v-model="goalData.improve" type="text" name="improve" >
+          <textarea required v-model="goalData.improve" type="text" name="improve" ></textarea>
           <label for="actions">What are at least two actions that you will take to make this improvement?</label>
-          <input  required v-model="goalData.actions" type="text" name="actions" >
+          <textarea  required v-model="goalData.actions" type="text" name="actions" ></textarea>
           <input id="save-goal" type="submit" value="Save Goal"/>
-          <p v-if="saveGoalConfirm">Goal Saved!</p>
         </form>
       </div>
       <div id="goal-view"  class="fadeIn" v-for="goal in goals" v-if="goalData.id === goal.id">
@@ -232,7 +231,6 @@ export default {
 
 #new-goal form {
   width: 90%;
-  margin-top: 1rem;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -246,19 +244,19 @@ export default {
   padding: .8rem 0rem;
 }
 
-#new-goal input {
+#new-goal textarea {
   width: 100%;
-  height: 1.2rem;
-  font-size: 1rem;
+  height: 2.5rem;
+  font-size: .8rem;
   padding-bottom: .4rem;
   border: solid #AFADB3 1px;
 }
 
 #save-goal {
-  width: 30% !important;
-  height: 2rem !important;
+  width: 30%;
+  height: 2rem;
   color: white;
-  font-size: 1.3rem !important;
+  font-size: 1.3rem;
   margin-top: 1rem;
   background-color: #D09400;
   border: solid #120832 1px;

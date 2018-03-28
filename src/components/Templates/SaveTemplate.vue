@@ -131,11 +131,18 @@ export default {
   background-color: #D09400;
   border: solid #120832 1px;
   border-radius: 10px;
+  margin-bottom: 2rem;
 }
 
 #save p {
-  margin-top: 1rem;
+  margin-top: -1rem;
+  height: 1rem;
   color: #D09400;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
 }
 
 </style>

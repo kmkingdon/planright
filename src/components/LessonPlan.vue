@@ -32,8 +32,8 @@
           <label for="lessonName">What is the name of your lesson plan?</label>
           <input required v-model="names.lessonName" type="text" name="lessonName">
           <input id="save" type="submit" name="button" value="Save Lesson Plan"/>
-          <p v-if="saveLessonConfirm"> Lesson Saved!</p>
         </form>
+        <p v-if="saveLessonConfirm"> Lesson Saved!</p>
       </div>
       <div v-if="oldLesson" id="edit-menu">
         <h2>Open a Lesson Plan:</h2>
@@ -48,8 +48,8 @@
           <label for="lessonName">What is the name of your lesson plan?</label>
           <input required  type="text" v-model="oldLessonData.name" name="lessonName">
           <input id="save" type="submit" name="button" value="Save Lesson Plan"/>
-          <p v-if="updateLessonConfirm"> Lesson Saved!</p>
         </form>
+        <p v-if="updateLessonConfirm"> Lesson Saved!</p>
       </div>
     </div>
     <div v-if="newLesson" class="lesson-plan-template fadeIn">
@@ -302,6 +302,7 @@ export default {
 }
 
 #edit-menu {
+  height: 65vh;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -309,6 +310,7 @@ export default {
 }
 
 #new-menu {
+  height: 65vh;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -317,6 +319,8 @@ export default {
 
 #new-menu h6 {
   font-size: .8rem;
+  margin-bottom: -1rem;
+  height: 1rem;
   color: red;
   cursor: pointer;
 }
@@ -359,6 +363,7 @@ export default {
   color: white;
   font-size: 1.1rem;
   margin-top: 2rem;
+  margin-bottom: -2rem;
   background-color: #d09400;
   border: solid #120832 1px;
   border-radius: 10px;
@@ -366,8 +371,14 @@ export default {
 
 p {
   margin-top: 1rem;
+  height: 1rem;
   font-size: 1.2rem;
   color: #d09400;
+  text-shadow:
+   -1px -1px 0 #120832,
+    1px -1px 0 #120832,
+    -1px 1px 0 #120832,
+     1px 1px 0 #120832;
 }
 
 #newFolder {
