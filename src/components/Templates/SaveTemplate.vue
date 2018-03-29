@@ -11,7 +11,7 @@
       </div>
       <img v-on:click="restartTemplate" id="restart" src="../../../static/restart.png" alt="restart"/>
       <router-link id="next" v-if="saveTemplateConfirm" to="/lessonplan">
-        To Lesson Plans
+        <h3>To Lesson Plans</h3>
         <img src="../../../static/arrowright.png" alt="simple-logo"/>
       </router-link>
     </div>
@@ -143,6 +143,55 @@ export default {
     1px -1px 0 #120832,
     -1px 1px 0 #120832,
      1px 1px 0 #120832;
+}
+
+@media only screen and (max-width: 600px) {
+  #restart {
+    height: 40%;
+  }
+
+  .template-views {
+    grid-template-rows: 15vh 75vh;
+    grid-template-columns: 20vw 60vw 20vw;
+  }
+
+  .template-views h2 {
+    font-size: 1.2rem;
+  }
+
+  #next {
+    width: 19vw;
+  }
+
+  #next h3 {
+    font-size: .5rem;
+  }
+  #next img {
+    width: 20%;
+  }
+
+  #save {
+    justify-content: flex-start;
+  }
+
+  #save form {
+    width: 90%;
+  }
+
+  #save label {
+    font-size: 1.2rem;
+  }
+
+  #save input {
+    border: solid black 1px;
+  }
+
+  #save button {
+    width: 40%;
+    height: 2rem;
+    font-size: 1.1rem;
+  }
+
 }
 
 </style>

@@ -404,4 +404,101 @@ p {
   animation-duration: 1s;
 }
 
+@media only screen and (max-width: 600px) {
+  #goal-dashboard {
+    grid-template-rows: 20vh 20vh 40vh 100vh;
+    grid-template-columns: 100vw;
+  }
+
+  #goal-menu h2 {
+    font-size: 1.2rem;
+    margin: .5rem;
+  }
+
+  #goal-menu button {
+    width: 50%;
+    font-size: 1rem;
+  }
+
+  #goal-menu select {
+    border: solid black 1px;
+    background-color: white;
+    width: 50%;
+  }
+
+  #goal-display {
+    grid-row: 4/5;
+    grid-column: 1/2;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  #new-goal h1 {
+    font-size: 1.2rem;
+  }
+
+  #new-goal h2 {
+    font-size: 1rem;
+  }
+
+
+  #component-select div {
+    width: 30vw;
+    height: 8vh;
+  }
+
+  #component-select div h3 {
+    width: 30vw;
+    font-size: .8rem;
+  }
+
+  #new-goal label {
+    font-size: 1rem;
+  }
+
+  #save-goal {
+    width: 50%;
+  }
+
+  #goal-view {
+    width: 100%;
+    height: 100vh;
+  }
+
+
+  #final-reflection {
+    width: 100%;
+    height: 60vh;
+  }
+
+  #final-reflection h6 {
+    font-size: 1.3rem;
+  }
+
+
+  #final-reflection label {
+    font-size: 1rem;
+  }
+
+  #final-reflection textarea {
+    border: solid black 1px;
+    height: 8vh;
+  }
+
+  #final-reflection input {
+    width: 50%;
+    height: 2rem;
+  }
+
+  #final-reflection-complete h6 {
+    font-size: 1.2rem;
+  }
+
+  #final-reflection-complete p {
+    font-size: 1rem;
+  }
+}
+
 </style>

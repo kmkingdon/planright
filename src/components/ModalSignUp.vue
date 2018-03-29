@@ -151,4 +151,13 @@ export default {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
+
+@media only screen and (max-width: 600px) {
+  .modal-container {
+    width: 90vw;
+    height: 80vh;
+    grid-template-columns: 80% 20%;
+  }
+
+}
 </style>

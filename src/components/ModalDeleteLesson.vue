@@ -110,4 +110,41 @@ export default {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
+
+@media only screen and (max-width: 600px) {
+  .modal-mask {
+    justify-content: center;
+    align-items: center;;
+  }
+
+  .modal-wrapper {
+    justify-content: center;
+    align-items: center;
+    margin: 0rem;
+  }
+
+  .modal-container {
+    width: 90vw;
+    height: 40vh;
+    display: grid;
+    grid-template-columns: 80% 20%;
+  }
+
+  .modal-container button {
+    grid-row: 1/2;
+    grid-column: 2/3;
+    border: solid black 1px;
+    font-size: .3rem;
+  }
+
+  .modal-container h1 {
+    font-size: 1.2rem;
+    padding: 0rem 1rem;
+  }
+
+  #confirm {
+    width: 70%;
+    height: 2rem;
+  }
+}
 </style>

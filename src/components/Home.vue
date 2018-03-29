@@ -264,4 +264,77 @@ export default {
   animation-name: fadeIn;
   animation-duration: 6s;
 }
+
+@media only screen and (max-width: 600px) {
+  #home {
+    display: grid;
+    grid-template-rows: 20vh 50vh 30vh 30vh;
+    grid-template-columns: 50vw 50vw ;
+  }
+
+  #login {
+    grid-row: 2/3;
+    grid-column: 1/3;
+  }
+
+  #login form {
+    width: 90%;
+    height: 90%;
+  }
+
+  #login form p {
+    text-align: center;
+    font-size: .8rem;
+  }
+
+  #login form h3 {
+    margin-top: 2rem;
+    font-size: 1.3rem;
+    color: #120832;
+  }
+
+  .about {
+    width: 90%;
+    height: 90%;
+  }
+
+  .about h3 {
+    height: 2rem;
+    font-size: .8rem;
+  }
+
+  .about img {
+    width: 80%;
+  }
+
+  .about li {
+    width: 85%;
+    font-size: .6rem;
+    margin: .8rem 0rem 0rem .7rem;
+  }
+
+  #templates {
+    grid-row: 3/4;
+    grid-column: 1/2;
+
+  }
+
+  #make{
+    grid-row: 3/4;
+    grid-column: 2/3;
+
+  }
+
+  #history {
+    grid-row: 4/5;
+    grid-column: 1/2;
+
+  }
+
+  #goal {
+    grid-row: 4/5;
+    grid-column: 2/3;
+
+  }
+}
 </style>

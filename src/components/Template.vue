@@ -217,4 +217,44 @@ aside h1 {
   animation-duration: 1s;
 }
 
+@media only screen and (max-width: 600px) {
+  #template {
+    grid-template-rows: 20vh 20vh 80vh;
+    grid-template-columns: 100vw;
+  }
+
+  #template-view {
+    grid-template-rows: 10vh 70vh;
+    grid-template-columns: 100vw;
+  }
+
+  #selected-template {
+    grid-row: 2/3;
+    grid-column: 1/2;
+  }
+
+  aside {
+    grid-template-rows: 10vh;
+    grid-template-columns: 100%;
+  }
+
+  #template-steps {
+    display: hidden;
+  }
+
+  .checkboxes {
+    display: hidden;
+  }
+
+  #template-steps h2 {
+    display: hidden;
+  }
+
+  .tada {
+    animation-name: TADA;
+    animation-duration: 2s;
+  }
+
+}
+
 </style>

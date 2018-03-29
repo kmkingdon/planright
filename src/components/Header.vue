@@ -217,4 +217,59 @@ header{
   animation-name: slideInRight;
   animation-duration: 3s;
 }
+
+@media only screen and (max-width: 600px) {
+  header{
+    grid-template-columns: 33vw 33vw 33vw;
+  }
+
+  #logo {
+    justify-self: center;
+    align-self: center;
+  }
+
+  #logo img {
+    height: 12vh;
+  }
+
+  #hook {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  #avatar {
+    height: 10vh;
+  }
+
+  #settings {
+    height: 6vh;
+  }
+
+  #setting-menu {
+    grid-row: 1/2;
+    grid-column: 1/3;
+    width: 90%;
+    z-index: 1;
+  }
+
+  #setting-menu h1 {
+    font-size: 1.3rem;
+  }
+
+  #setting-menu h2 {
+    font-size: 1.1rem;
+  }
+
+  #setting-menu h3 {
+    font-size: .6rem;
+  }
+
+  #setting-menu h4 {
+    font-size: .6rem;
+  }
+
+  #setting-menu h5 {
+    font-size: .6rem;
+  }
+}
 </style>

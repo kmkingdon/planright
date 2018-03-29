@@ -541,4 +541,136 @@ export default {
   animation-duration: 1s;
 }
 
+@media only screen and (max-width: 600px) {
+  #plan-history {
+    grid-template-rows: 20vh 20vh 50vh 50vh 60vh;
+    grid-template-columns: 100vw;
+  }
+
+  #history-menu h2 {
+    margin: 1rem 0rem .7rem 0rem;
+    font-size: 1.2rem;
+  }
+
+  #history-menu select {
+    border: solid black 1px;
+    background-color: white;
+    width: 100%;
+    height: 1.5rem;
+    margin: .5rem 0rem .5rem 0rem;
+  }
+
+  #lessons {
+    width: 90%;
+    height: 60%;
+  }
+
+
+  #lesson-display {
+    grid-row: 5/6;
+    grid-column: 1/2;
+    overflow: scroll;
+  }
+
+  #lesson-display-inner {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  #lesson-display-inner h1{
+    width:  100%;
+    height: 6vh;
+    text-align: center;
+    font-size: 1.8rem;
+    padding-top: .6rem;
+    border: solid #AFADB3 1px;
+  }
+
+  #lesson-display-inner h2 {
+    width:  100%;
+    height: 4vh;
+    text-align: center;
+    font-size: 1rem;
+    padding-top: .5rem;
+    border: solid #AFADB3 1px;
+  }
+
+  #standards-view h2{
+    margin-bottom: 1rem;
+  }
+
+  #standards-view ul {
+    min-height: 10vh;
+  }
+
+  #lesson-menu {
+    grid-row: 4/5;
+    grid-column: 1/2;
+  }
+
+  #lesson-menu h2 {
+    margin: 1rem .5rem .5rem .5rem;
+    font-size: 1.2rem;
+  }
+
+  #lesson-menu h3 {
+    margin: .5rem;
+    font-size: .9rem;
+    text-align: center;
+  }
+
+  #lesson-menu button {
+    font-size: 1rem;
+  }
+
+  #lesson-reflection h5 {
+    font-size: 1.1rem;
+  }
+
+  #goal-review  h6{
+    font-size: .8rem;
+  }
+
+  #goal-review p {
+    font-size: .7rem;
+  }
+
+  #lesson-reflection form {
+    width: 100%;
+    height: 40vh;
+  }
+
+  #lesson-reflection label {
+    font-size: .8rem;
+    padding: .6rem 0rem;
+  }
+
+  #lesson-reflection textarea {
+    width: 90%;
+    height: 2rem;
+  }
+
+  #save-reflection {
+    width: 50% ;
+    height: 2rem ;
+    font-size: 1rem ;
+  }
+
+
+  #lesson-reflection-complete h5 {
+    font-size: 1.2rem;
+  }
+
+  #lesson-reflection-complete  h6{
+    font-size: .9rem;
+  }
+
+  #lesson-reflection-complete p {
+    font-size: .7rem;
+  }
+
+}
+
 </style>

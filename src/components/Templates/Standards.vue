@@ -129,7 +129,45 @@ export default {
   margin-bottom: 2rem;
 }
 
+@media only screen and (max-width: 600px) {
+  .template-views {
+    grid-template-rows: 15vh 65vh;
+    grid-template-columns: 20vw 60vw 20vw;
+  }
 
+  .template-views h2 {
+    font-size: 1.4rem;
+  }
 
+  #next {
+    width: 15vw;
+  }
+
+  #next h3 {
+    font-size: .8rem;
+  }
+  #next img {
+    width: 20%;
+  }
+
+  #standards {
+    justify-content: flex-start;
+  }
+
+  #standards form {
+    width: 90%;
+    height: 60%;
+  }
+
+  #standards label {
+    font-size: 1rem;
+  }
+
+  #standards select {
+    width: 90%;
+    border: solid black 1px;
+  }
+
+}
 
 </style>

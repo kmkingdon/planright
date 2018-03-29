@@ -73,4 +73,11 @@ table {
   font-family: Barlow;
   overflow: hidden;
 }
+
+@media only screen and (max-width: 600px) {
+  #app {
+    width: 100vw;
+    height: 100%;
+  }
+}
 </style>

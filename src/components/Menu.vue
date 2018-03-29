@@ -34,7 +34,7 @@ export default {
   grid-column: 1/end;
   background-color: #939097;
   display: flex;
-  flex-flow: row;
+  flex-flow: row wrap;
   justify-content: space-around;
   align-items: center;
 }
@@ -55,5 +55,15 @@ export default {
   text-align: center;
 }
 
+@media only screen and (max-width: 600px) {
+  #menu {
+    grid-column: 1/2;
+  }
+  #menu a {
+    height: 30%;
+    width: 45%;
+    font-size: 1rem;
+  }
+}
 
 </style>

@@ -187,4 +187,58 @@ export default {
   font-size: 1.7rem;
 }
 
+@media only screen and (max-width: 600px) {
+  #restart {
+    height: 40%;
+  }
+
+  .template-views {
+    grid-template-rows: 15vh 65vh;
+    grid-template-columns: 20vw 60vw 20vw;
+  }
+
+  .template-views h2 {
+    font-size: 1.2rem;
+  }
+
+  #next {
+    width: 15vw;
+  }
+
+  #next h3 {
+    font-size: .8rem;
+  }
+  #next img {
+    width: 20%;
+  }
+
+  #components{
+    grid-template-rows: 5vh 75vh;
+    grid-template-columns: 100vw;
+    overflow: scroll;
+  }
+
+  #components ul {
+    grid-row: 2/3;
+    grid-column: 1/2;
+  }
+
+  #components li {
+    width: 90%;
+    height: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .input {
+    border: solid black 1px;
+    width: 30%;
+  }
+
+  #add-component {
+    grid-row: 1/2;
+    grid-column: 1/2;
+  }
+
+}
+
 </style>

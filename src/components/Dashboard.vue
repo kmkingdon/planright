@@ -61,4 +61,12 @@ export default {
   animation-name: fadeIn;
   animation-duration: 6s;
 }
+
+@media only screen and (max-width: 600px) {
+  #dashboard {
+    grid-template-rows: 20vh 20vh 60vh;
+    grid-template-columns: 100vw;
+  }
+
+}
 </style>

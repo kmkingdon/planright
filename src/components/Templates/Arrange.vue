@@ -199,4 +199,42 @@ export default {
   color: white;
 }
 
+@media only screen and (max-width: 600px) {
+  #restart {
+    height: 40%;
+  }
+
+  .template-views {
+    grid-template-rows: 15vh 75vh;
+    grid-template-columns: 20vw 60vw 20vw;
+  }
+
+  .template-views h2 {
+    font-size: 1.2rem;
+  }
+
+  #next {
+    width: 15vw;
+  }
+
+  #next h3 {
+    font-size: .8rem;
+  }
+  #next img {
+    width: 20%;
+  }
+
+  #save button {
+    width: 90%;
+    height: 1.7rem;
+    font-size: 1rem;
+    margin-bottom: 13rem;
+  }
+
+  #save p {
+    margin-top: -13rem;
+    padding-bottom: 13rem;
+  }
+}
+
 </style>

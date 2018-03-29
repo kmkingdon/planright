@@ -639,4 +639,144 @@ p {
   animation-name: fadeIn;
   animation-duration: 1s;
 }
+
+@media only screen and (max-width: 600px) {
+  #lesson-plan {
+    display: grid;
+    grid-template-rows: 20vh 20vh 50vh 50vh 60vh;
+    grid-template-columns: 100vw;
+  }
+  #toggle {
+    height: 4vh;
+  }
+
+  #toggle button {
+    height: 1.3rem;
+  }
+
+  #edit-menu {
+    height: 50vh;
+  }
+
+  #new-menu {
+    height: 50vh;
+  }
+
+  #new-menu h6 {
+    font-size: .6rem;
+    margin-bottom: -1rem;
+    height: 1rem;
+  }
+
+  #lesson-plan-menu h2 {
+    margin: 1rem 0rem 1rem 0rem;
+    font-size: 1.3rem;
+    width: 90%;
+  }
+
+  #lesson-plan-menu form {
+    width: 90%;
+  }
+
+  #lesson-plan-menu select {
+    border: solid black 1px;
+    background-color: white;
+    width: 90%;
+    height: 1.5rem;
+    margin: 0rem;
+  }
+
+  #lesson-plan-menu input {
+    width: 90%;
+    height: 1.5rem;
+  }
+
+  #save {
+    width: 60% !important;
+    height: 2rem;
+    font-size: .8rem;
+  }
+
+  p {
+    font-size: .7rem;
+    margin-top: -.5rem;
+  }
+
+  #newFolder {
+    width: 100%;
+    height: 2rem;
+  }
+
+  #newFolder input {
+    height: 1rem;
+    width: 50%;
+  }
+
+  #add-folder {
+    height: 50%;
+    font-size: 0.5rem!important;
+  }
+
+  .lesson-plan-template {
+    grid-row: 5/6;
+    grid-column: 1/2;
+    display: grid;
+    grid-template-rows: 5vh 20vh 35vh;
+  }
+
+  .date input {
+    border: solid black 1px;
+  }
+
+  .date h2 {
+    font-size: .8rem;
+  }
+
+  #clear {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #clear button {
+    margin-left: 4rem;
+    width: 50%;
+    margin-top: .4rem;
+    font-size: 0.7rem;
+  }
+
+  #template {
+    height: 35vh;
+  }
+
+  #standards-menu {
+    grid-row: 4/5;
+    grid-column: 1/2;
+    background-color: #120832;
+  }
+
+  #standards-menu h1 {
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  #standards-menu h2 {
+    color: white;
+    font-size: 1rem;
+  }
+
+  #standards-menu select {
+    background-color: white;
+    height: 2rem;
+    margin: 0.5rem 0rem 0rem 0rem;
+  }
+
+  #standards-menu button {
+    width: 50%;
+  }
+
+}
+
 </style>
